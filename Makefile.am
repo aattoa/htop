@@ -220,29 +220,6 @@ myhtopplatheaders = $(linux_platform_headers)
 myhtopplatsources = $(linux_platform_sources)
 endif
 
-# Unsupported
-# -----------
-
-unsupported_platform_headers = \
-	generic/gettime.h \
-	unsupported/Platform.h \
-	unsupported/ProcessField.h \
-	unsupported/UnsupportedMachine.h \
-	unsupported/UnsupportedProcess.h \
-	unsupported/UnsupportedProcessTable.h
-
-unsupported_platform_sources = \
-	generic/gettime.c \
-	unsupported/Platform.c \
-	unsupported/UnsupportedMachine.c \
-	unsupported/UnsupportedProcess.c \
-	unsupported/UnsupportedProcessTable.c
-
-if HTOP_UNSUPPORTED
-myhtopplatsources = $(unsupported_platform_sources)
-myhtopplatheaders = $(unsupported_platform_headers)
-endif
-
 # ----
 
 htop_SOURCES = $(myhtopplatprogram) $(myhtopheaders) $(myhtopplatheaders) $(myhtopsources) $(myhtopplatsources)

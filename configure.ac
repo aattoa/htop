@@ -28,8 +28,7 @@ linux*|gnu*)
    AC_DEFINE([HTOP_LINUX], [], [Building for Linux.])
    ;;
 *)
-   my_htop_platform=unsupported
-   AC_DEFINE([HTOP_UNSUPPORTED], [], [Building for an unsupported platform.])
+   AC_MSG_ERROR([Unsupported platform])
    ;;
 esac
 
@@ -713,24 +712,10 @@ AC_SUBST([AM_CPPFLAGS])
 AC_DEFINE_UNQUOTED([COPYRIGHT], ["(C) 2004-2019 Hisham Muhammad. (C) 2020-2024 htop dev team."], [Copyright message.])
 
 AM_CONDITIONAL([HTOP_LINUX], [test "$my_htop_platform" = linux])
-AM_CONDITIONAL([HTOP_UNSUPPORTED], [test "$my_htop_platform" = unsupported])
 
 AC_SUBST(my_htop_platform)
 AC_CONFIG_FILES([Makefile htop.1])
 AC_OUTPUT
-
-if test "$my_htop_platform" = unsupported; then
-   echo ""
-   echo "****************************************************************"
-   echo "WARNING! This platform is not currently supported by htop."
-   echo ""
-   echo "The code will build, but it will produce a dummy version of htop"
-   echo "which shows no processes, using the files from the unsupported/"
-   echo "directory. This is meant to be a skeleton, to be used as a"
-   echo "starting point if you are porting htop to a new platform."
-   echo "****************************************************************"
-   echo ""
-fi
 
 AC_MSG_RESULT([
   ${PACKAGE_NAME} ${VERSION}
