@@ -2,6 +2,12 @@
 
 [![License: GPL v2+](https://img.shields.io/badge/License-GPL%20v2+-blue.svg)](COPYING?raw=true)
 
+## This fork
+
+* Removes support for platforms other than Linux, in order to simplify the source code and the build process.
+* Uses CMake instead of GNU autotools.
+* Adds `vi` style movement commands.
+
 ## Introduction
 
 `htop` is a cross-platform interactive process viewer.
@@ -23,88 +29,33 @@ For more information and details visit [htop.dev](https://htop.dev).
 
 ### Prerequisite
 List of build-time dependencies:
-  * standard GNU autotools-based C toolchain
-    - C99 compliant compiler
-    - `autoconf`
-    - `automake`
-    - `autotools`
-  * `ncurses`
 
-**Note about `ncurses`:**
-> `htop` requires `ncurses` 6.0. Be aware the appropriate package is sometimes still called libncurses5 (on Debian/Ubuntu). Also `ncurses` usually comes in two flavours:
->* With Unicode support.
->* Without Unicode support.
->
-> This is also something that is reflected in the package name on Debian/Ubuntu (via the additional 'w' - 'w'ide character support).
+* CMake
+* C99 compiler toolchain
+* ncurses
 
 List of additional build-time dependencies (based on feature flags):
-*  `sensors`
-*  `hwloc`
-*  `libcap` (v2.21 or later)
-*  `libnl-3` and `libnl-genl-3`
+
+* `sensors`
+* `hwloc`
+* `libcap` (v2.21 or later)
+* `libnl-3` and `libnl-genl-3`
 
 Install these and other required packages for C development from your package manager.
 
-**Debian/Ubuntu**
-~~~ shell
-sudo apt install libncursesw5-dev autotools-dev autoconf automake build-essential
-~~~
-
-**Fedora/RHEL**
-~~~ shell
-sudo dnf install ncurses-devel automake autoconf gcc
-~~~
-
-**Archlinux/Manjaro**
-~~~ shell
-sudo pacman -S ncurses automake autoconf gcc
-~~~
-
-**macOS**
-~~~ shell
-brew install ncurses automake autoconf gcc
-~~~
-
 ### Compile from source:
-To compile from source, download from the Git repository (`git clone` or downloads from [GitHub releases](https://github.com/htop-dev/htop/releases/)), then run:
-~~~ shell
-./autogen.sh && ./configure && make
-~~~
-
-### Install
-To install on the local system run `make install`. By default `make install` installs into `/usr/local`. To change this path use `./configure --prefix=/some/path`.
+To compile from source, clone the Git repository (`git clone`), then run:
+```sh
+cmake -S . -B build && make -C build
+```
 
 ## Runtime dependencies:
 `htop` has a set of fixed minimum runtime dependencies, which is kept as minimal as possible:
+
 * `ncurses` libraries for terminal handling (wide character support).
 
-### Runtime optional dependencies:
-`htop` has a set of fixed optional dependencies, depending on build/configure option used:
-
-#### Linux
-* `libdl`, if not building a static binary, is always required when support for optional dependencies (i.e. `libsensors`, `libsystemd`) is present.
-* `libcap`, user-space interfaces to POSIX 1003.1e capabilities, is always required when `--enable-capabilities` was used to configure `htop`.
-* `libsensors`, readout of temperatures and CPU speeds, is optional even when `--enable-sensors` was used to configure `htop`.
-* `libsystemd` is optional when `--enable-static` was not used to configure `htop`. If building statically and `libsystemd` is not found by `configure`, support for the systemd meter is disabled entirely.
-* `libnl-3` and `libnl-genl-3`, if `htop` was configured with `--enable-delayacct` and delay accounting process fields are active.
-
-`htop` checks for the availability of the actual runtime libraries as `htop` runs.
-
 ## Usage
-See the manual page (`man htop`) or the help menu (**F1** or **h** inside `htop`) for a list of supported key commands.
-
-## Support
-
-If you have trouble running `htop` please consult your operating system / Linux distribution documentation for getting support and filing bugs.
-
-## Bugs, development feedback
-
-We have a [development mailing list](https://htop.dev/mailinglist.html). Feel free to subscribe for release announcements or asking questions on the development of `htop`.
-
-You can also join our IRC channel [#htop on Libera.Chat](https://web.libera.chat/#htop) and talk to the developers there.
-
-If you have found an issue within the source of `htop`, please check whether this has already been reported in our [GitHub issue tracker](https://github.com/htop-dev/htop/issues).
-If not, please file a new issue describing the problem you have found, the potential location in the source code you are referring to and a possible fix if available.
+See the help menu (**F1** or **?** inside `htop`) for a list of supported key commands.
 
 ## History
 
