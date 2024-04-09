@@ -1,0 +1,208 @@
+cmake_minimum_required(VERSION 3.24)
+project(htop)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+set(HTOP_FILES
+    src/Action.c
+    src/Action.h
+    src/Affinity.c
+    src/Affinity.h
+    src/AffinityPanel.c
+    src/AffinityPanel.h
+    src/AvailableColumnsPanel.c
+    src/AvailableColumnsPanel.h
+    src/AvailableMetersPanel.c
+    src/AvailableMetersPanel.h
+    src/BatteryMeter.c
+    src/BatteryMeter.h
+    src/CategoriesPanel.c
+    src/CategoriesPanel.h
+    src/ClockMeter.c
+    src/ClockMeter.h
+    src/ColorsPanel.c
+    src/ColorsPanel.h
+    src/ColumnsPanel.c
+    src/ColumnsPanel.h
+    src/CommandLine.c
+    src/CommandLine.h
+    src/CommandScreen.c
+    src/CommandScreen.h
+    src/Compat.c
+    src/Compat.h
+    src/config.h
+    src/CPUMeter.c
+    src/CPUMeter.h
+    src/CRT.c
+    src/CRT.h
+    src/DateMeter.c
+    src/DateMeter.h
+    src/DateTimeMeter.c
+    src/DateTimeMeter.h
+    src/DiskIOMeter.c
+    src/DiskIOMeter.h
+    src/DisplayOptionsPanel.c
+    src/DisplayOptionsPanel.h
+    src/DynamicColumn.c
+    src/DynamicColumn.h
+    src/DynamicMeter.c
+    src/DynamicMeter.h
+    src/DynamicScreen.c
+    src/DynamicScreen.h
+    src/EnvScreen.c
+    src/EnvScreen.h
+    src/FileDescriptorMeter.c
+    src/FileDescriptorMeter.h
+    src/FunctionBar.c
+    src/FunctionBar.h
+    src/Hashtable.c
+    src/Hashtable.h
+    src/Header.c
+    src/Header.h
+    src/HeaderLayout.h
+    src/HeaderOptionsPanel.c
+    src/HeaderOptionsPanel.h
+    src/HostnameMeter.c
+    src/HostnameMeter.h
+    src/htop.c
+    src/IncSet.c
+    src/IncSet.h
+    src/InfoScreen.c
+    src/InfoScreen.h
+    src/ListItem.c
+    src/ListItem.h
+    src/LoadAverageMeter.c
+    src/LoadAverageMeter.h
+    src/Machine.c
+    src/Machine.h
+    src/Macros.h
+    src/MainPanel.c
+    src/MainPanel.h
+    src/MemoryMeter.c
+    src/MemoryMeter.h
+    src/MemorySwapMeter.c
+    src/MemorySwapMeter.h
+    src/Meter.c
+    src/Meter.h
+    src/MetersPanel.c
+    src/MetersPanel.h
+    src/NetworkIOMeter.c
+    src/NetworkIOMeter.h
+    src/Object.c
+    src/Object.h
+    src/OpenFilesScreen.c
+    src/OpenFilesScreen.h
+    src/OptionItem.c
+    src/OptionItem.h
+    src/Panel.c
+    src/Panel.h
+    src/Process.c
+    src/Process.h
+    src/ProcessLocksScreen.c
+    src/ProcessLocksScreen.h
+    src/ProcessTable.c
+    src/ProcessTable.h
+    src/ProvideCurses.h
+    src/ProvideTerm.h
+    src/RichString.c
+    src/RichString.h
+    src/Row.c
+    src/RowField.h
+    src/Row.h
+    src/Scheduling.c
+    src/Scheduling.h
+    src/ScreenManager.c
+    src/ScreenManager.h
+    src/ScreensPanel.c
+    src/ScreensPanel.h
+    src/ScreenTabsPanel.c
+    src/ScreenTabsPanel.h
+    src/Settings.c
+    src/Settings.h
+    src/SignalsPanel.c
+    src/SignalsPanel.h
+    src/SwapMeter.c
+    src/SwapMeter.h
+    src/SysArchMeter.c
+    src/SysArchMeter.h
+    src/Table.c
+    src/Table.h
+    src/TasksMeter.c
+    src/TasksMeter.h
+    src/TraceScreen.c
+    src/TraceScreen.h
+    src/UptimeMeter.c
+    src/UptimeMeter.h
+    src/UsersTable.c
+    src/UsersTable.h
+    src/Vector.c
+    src/Vector.h
+    src/XUtils.c
+    src/XUtils.h)
+
+set(HTOP_GENERIC_FILES
+    src/generic/gettime.c
+    src/generic/gettime.h
+    src/generic/hostname.c
+    src/generic/hostname.h
+    src/generic/uname.c
+    src/generic/uname.h)
+
+set(HTOP_LINUX_FILES
+    src/linux/CGroupUtils.c
+    src/linux/CGroupUtils.h
+    src/linux/GPU.c
+    src/linux/GPU.h
+    src/linux/GPUMeter.c
+    src/linux/GPUMeter.h
+    src/linux/HugePageMeter.c
+    src/linux/HugePageMeter.h
+    src/linux/IOPriority.h
+    src/linux/IOPriorityPanel.c
+    src/linux/IOPriorityPanel.h
+    src/linux/LibSensors.c
+    src/linux/LibSensors.h
+    src/linux/LinuxMachine.c
+    src/linux/LinuxMachine.h
+    src/linux/LinuxProcess.c
+    src/linux/LinuxProcess.h
+    src/linux/LinuxProcessTable.c
+    src/linux/LinuxProcessTable.h
+    src/linux/Platform.c
+    src/linux/Platform.h
+    src/linux/PressureStallMeter.c
+    src/linux/PressureStallMeter.h
+    src/linux/ProcessField.h
+    src/linux/SELinuxMeter.c
+    src/linux/SELinuxMeter.h
+    src/linux/SystemdMeter.c
+    src/linux/SystemdMeter.h
+    src/linux/ZramMeter.c
+    src/linux/ZramMeter.h
+    src/linux/ZramStats.h
+    src/linux/ZswapStats.h)
+
+set(HTOP_ZFS_FILES
+    src/zfs/ZfsArcMeter.c
+    src/zfs/ZfsArcMeter.h
+    src/zfs/ZfsArcStats.h
+    src/zfs/ZfsCompressedArcMeter.c
+    src/zfs/ZfsCompressedArcMeter.h)
+
+add_executable(htop
+    ${HTOP_FILES}
+    ${HTOP_GENERIC_FILES}
+    ${HTOP_LINUX_FILES}
+    ${HTOP_ZFS_FILES})
+
+target_include_directories(htop
+    PUBLIC src
+    PUBLIC src/generic
+    PUBLIC src/linux
+    PUBLIC src/zfs)
+
+target_link_libraries(htop
+    PUBLIC c
+    PUBLIC m
+    PUBLIC cap
+    PUBLIC ncursesw)

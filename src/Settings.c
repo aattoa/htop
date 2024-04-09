@@ -850,11 +850,6 @@ Settings* Settings_new(unsigned int initialCpuCount, Hashtable* dynamicMeters, H
       free(legacyDotfile);
    }
    if (!ok) {
-      this->screenTabs = true;
-      this->changed = true;
-      ok = Settings_read(this, SYSCONFDIR "/htoprc", initialCpuCount);
-   }
-   if (!ok) {
       Settings_defaultMeters(this, initialCpuCount);
       Settings_defaultScreens(this);
    }

@@ -1,14 +1,6 @@
-# [![htop logo](htop.png)](https://htop.dev)
+# htop
 
-[![CI](https://github.com/htop-dev/htop/workflows/CI/badge.svg)](https://github.com/htop-dev/htop/actions)
-[![Coverity Scan Build Status](https://scan.coverity.com/projects/21665/badge.svg)](https://scan.coverity.com/projects/21665)
-[![Mailing List](https://img.shields.io/badge/Mailing%20List-htop-blue.svg)](https://groups.io/g/htop)
-[![IRC #htop](https://img.shields.io/badge/IRC-htop-blue.svg)](https://web.libera.chat/#htop)
-[![GitHub Release](https://img.shields.io/github/release/htop-dev/htop.svg)](https://github.com/htop-dev/htop/releases/latest)
-[![Packaging status](https://repology.org/badge/tiny-repos/htop.svg)](https://repology.org/project/htop/versions)
 [![License: GPL v2+](https://img.shields.io/badge/License-GPL%20v2+-blue.svg)](COPYING?raw=true)
-
-![Screenshot of htop](docs/images/screenshot.png?raw=true)
 
 ## Introduction
 
@@ -81,58 +73,6 @@ To compile from source, download from the Git repository (`git clone` or downloa
 
 ### Install
 To install on the local system run `make install`. By default `make install` installs into `/usr/local`. To change this path use `./configure --prefix=/some/path`.
-
-### Build Options
-
-`htop` has several build-time options to enable/disable additional features.
-
-#### Generic
-
-  * `--enable-unicode`:
-    enable Unicode support
-    - dependency: *libncursesw*
-    - default: *yes*
-  * `--enable-affinity`:
-    enable `sched_setaffinity(2)` and `sched_getaffinity(2)` for affinity support; conflicts with hwloc
-    - default: *check*
-  * `--enable-hwloc`:
-    enable hwloc support for CPU affinity; disables affinity support
-    - dependency: *libhwloc*
-    - default: *no*
-  * `--enable-static`:
-    build a static htop binary; hwloc and delay accounting are not supported
-    - default: *no*
-  * `--enable-debug`:
-    Enable asserts and internal sanity checks; implies a performance penalty
-    - default: *no*
-
-#### Linux
-
-  * `--enable-sensors`:
-    enable libsensors(3) support for reading temperature data
-    - dependencies: *libsensors-dev*(build-time), at runtime *libsensors* is loaded via `dlopen(3)` if available
-    - default: *check*
-  * `--enable-capabilities`:
-    enable Linux capabilities support
-    - dependency: *libcap*
-    - default: *check*
-  * `--with-proc`:
-    location of a Linux-compatible proc filesystem
-    - default: */proc*
-  * `--enable-openvz`:
-    enable OpenVZ support
-    - default: *no*
-  * `--enable-vserver`:
-    enable VServer support
-    - default: *no*
-  * `--enable-ancient-vserver`:
-    enable ancient VServer support (implies `--enable-vserver`)
-    - default: *no*
-  * `--enable-delayacct`:
-    enable Linux delay accounting support
-    - dependencies: *libnl-3-dev*(build-time) and *libnl-genl-3-dev*(build-time), at runtime *libnl-3* and *libnl-genl-3* are loaded via `dlopen(3)` if available and requested
-    - default: *check*
-
 
 ## Runtime dependencies:
 `htop` has a set of fixed minimum runtime dependencies, which is kept as minimal as possible:

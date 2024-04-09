@@ -28,6 +28,7 @@ in the source distribution for its full text.
 #include <sys/mman.h>
 #endif
 
+#if 0
 #if defined(HAVE_LIBUNWIND_H) && defined(HAVE_LIBUNWIND)
 # define PRINT_BACKTRACE
 # define UNW_LOCAL_ONLY
@@ -38,6 +39,7 @@ in the source distribution for its full text.
 #elif defined(HAVE_EXECINFO_H)
 # define PRINT_BACKTRACE
 # include <execinfo.h>
+#endif
 #endif
 
 

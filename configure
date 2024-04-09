@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cmake -S . -B out/release -G Ninja -DCMAKE_BUILD_TYPE=Release
+[ -e compile_commands.json ] || ln -s out/release/compile_commands.json .
