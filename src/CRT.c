@@ -828,7 +828,7 @@ static int CRT_colorSchemes[LAST_COLORSCHEME][LAST_COLORELEMENT] = {
 
 static bool CRT_retainScreenOnExit = false;
 
-int CRT_scrollHAmount = 5;
+int CRT_scrollHAmount = 2;
 
 int CRT_scrollWheelVAmount = 10;
 
@@ -1043,7 +1043,7 @@ void CRT_init(const Settings* settings, bool allowUnicode, bool retainScreenOnEx
    if (termType && String_eq(termType, "linux")) {
       CRT_scrollHAmount = 20;
    } else {
-      CRT_scrollHAmount = 5;
+      CRT_scrollHAmount = 2;
    }
 
    if (termType && (String_startsWith(termType, "xterm") || String_eq(termType, "vt220"))) {
