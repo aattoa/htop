@@ -1,10 +1,5 @@
-if !HTOP_PCP
 bin_PROGRAMS = htop
 myhtopplatprogram = htop.c
-else
-bin_PROGRAMS = pcp-htop
-myhtopplatprogram = pcp-htop.c
-endif
 
 dist_man_MANS = htop.1
 EXTRA_DIST = \
@@ -223,52 +218,6 @@ if HTOP_LINUX
 AM_LDFLAGS += -rdynamic
 myhtopplatheaders = $(linux_platform_headers)
 myhtopplatsources = $(linux_platform_sources)
-endif
-
-# Performance Co-Pilot (PCP)
-# --------------------------
-
-pcp_platform_headers = \
-	linux/CGroupUtils.h \
-	linux/PressureStallMeter.h \
-	linux/ZramMeter.h \
-	linux/ZramStats.h \
-	pcp/Instance.h \
-	pcp/InDomTable.h \
-	pcp/Metric.h \
-	pcp/Platform.h \
-	pcp/ProcessField.h \
-	pcp/PCPDynamicColumn.h \
-	pcp/PCPDynamicMeter.h \
-	pcp/PCPDynamicScreen.h \
-	pcp/PCPMachine.h \
-	pcp/PCPProcess.h \
-	pcp/PCPProcessTable.h \
-	zfs/ZfsArcMeter.h \
-	zfs/ZfsArcStats.h \
-	zfs/ZfsCompressedArcMeter.h
-
-pcp_platform_sources = \
-	linux/CGroupUtils.c \
-	linux/PressureStallMeter.c \
-	linux/ZramMeter.c \
-	pcp/Instance.c \
-	pcp/InDomTable.c \
-	pcp/Metric.c \
-	pcp/Platform.c \
-	pcp/PCPDynamicColumn.c \
-	pcp/PCPDynamicMeter.c \
-	pcp/PCPDynamicScreen.c \
-	pcp/PCPMachine.c \
-	pcp/PCPProcess.c \
-	pcp/PCPProcessTable.c \
-	zfs/ZfsArcMeter.c \
-	zfs/ZfsCompressedArcMeter.c
-
-if HTOP_PCP
-myhtopplatheaders = $(pcp_platform_headers)
-myhtopplatsources = $(pcp_platform_sources)
-pcp_htop_SOURCES  = $(myhtopplatprogram) $(myhtopheaders) $(myhtopplatheaders) $(myhtopsources) $(myhtopplatsources)
 endif
 
 # Unsupported

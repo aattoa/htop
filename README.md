@@ -106,13 +106,6 @@ To install on the local system run `make install`. By default `make install` ins
     Enable asserts and internal sanity checks; implies a performance penalty
     - default: *no*
 
-#### Performance Co-Pilot
-
-  * `--enable-pcp`:
-    enable Performance Co-Pilot support via a new pcp-htop utility
-    - dependency: *libpcp*
-    - default: *no*
-
 #### Linux
 
   * `--enable-sensors`:

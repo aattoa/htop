@@ -80,33 +80,6 @@ esac
 # ----------------------------------------------------------------------
 
 # ----------------------------------------------------------------------
-# Checks for a PCP-based htop build.  (https://pcp.io)
-# ----------------------------------------------------------------------
-
-AC_ARG_ENABLE([pcp],
-              [AS_HELP_STRING([--enable-pcp],
-                              [build a pcp-htop binary @<:@default=no@:>@])],
-              [],
-              [enable_pcp=no])
-case "$enable_pcp" in
-   no)
-      ;;
-   yes)
-      AC_CHECK_HEADERS([pcp/pmapi.h], [my_htop_platform=pcp],
-                       [AC_MSG_ERROR([can not find PCP header file])])
-      AC_SEARCH_LIBS([pmNewContext], [pcp], [], [AC_MSG_ERROR([can not find PCP library])])
-      AC_DEFINE([HTOP_PCP], [1], [Define if building pcp-htop binary.])
-      AC_CONFIG_FILES([pcp-htop.5])
-      ;;
-   *)
-      AC_MSG_ERROR([bad value '$enable_pcp' for --enable-pcp option])
-      ;;
-esac
-
-# ----------------------------------------------------------------------
-
-
-# ----------------------------------------------------------------------
 # Checks for generic header files.
 # ----------------------------------------------------------------------
 
@@ -269,10 +242,6 @@ AC_CHECK_FUNCS([ \
     sched_setscheduler \
     strchrnul \
    ])
-
-if test "$my_htop_platform" = pcp; then
-   AC_CHECK_FUNCS([pmLookupDescs])
-fi
 
 if test "$my_htop_platform" = linux && test "x$enable_static" = xyes; then
    AC_CHECK_LIB([systemd], [sd_bus_open_system], [], [], [-lcap])
@@ -744,7 +713,6 @@ AC_SUBST([AM_CPPFLAGS])
 AC_DEFINE_UNQUOTED([COPYRIGHT], ["(C) 2004-2019 Hisham Muhammad. (C) 2020-2024 htop dev team."], [Copyright message.])
 
 AM_CONDITIONAL([HTOP_LINUX], [test "$my_htop_platform" = linux])
-AM_CONDITIONAL([HTOP_PCP], [test "$my_htop_platform" = pcp])
 AM_CONDITIONAL([HTOP_UNSUPPORTED], [test "$my_htop_platform" = unsupported])
 
 AC_SUBST(my_htop_platform)
