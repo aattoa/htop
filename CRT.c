@@ -1045,10 +1045,6 @@ void CRT_init(const Settings* settings, bool allowUnicode, bool retainScreenOnEx
    }
 
    if (termType && (String_startsWith(termType, "xterm") || String_eq(termType, "vt220"))) {
-#ifdef HTOP_NETBSD
-#define define_key(s_, k_) define_key((char*)s_, k_)
-IGNORE_WCASTQUAL_BEGIN
-#endif
       define_key("\033[H", KEY_HOME);
       define_key("\033[F", KEY_END);
       define_key("\033[7~", KEY_HOME);
@@ -1072,10 +1068,6 @@ IGNORE_WCASTQUAL_BEGIN
       }
       define_key("\033[I", KEY_FOCUS_IN);
       define_key("\033[O", KEY_FOCUS_OUT);
-#ifdef HTOP_NETBSD
-IGNORE_WCASTQUAL_END
-#undef define_key
-#endif
    }
    if (termType && (String_startsWith(termType, "rxvt"))) {
       define_key("\033[Z", KEY_SHIFT_TAB);
@@ -1284,11 +1276,7 @@ void CRT_handleSIGSEGV(int signal) {
       program
    );
 
-#ifdef HTOP_DARWIN
-   fprintf(stderr, "   otool -tvV `which %s` > ~/%s.otool\n", program, program);
-#else
    fprintf(stderr, "   objdump -d -S -w `which %s` > ~/%s.objdump\n", program, program);
-#endif
 
    fprintf(stderr,
       "\n"

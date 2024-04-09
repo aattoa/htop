@@ -157,11 +157,6 @@ To install on the local system run `make install`. By default `make install` ins
 
 `htop` checks for the availability of the actual runtime libraries as `htop` runs.
 
-#### BSD
-On most BSD systems `kvm` is a requirement to read kernel information.
-
-More information on required and optional dependencies can be found in [configure.ac](configure.ac).
-
 ## Usage
 See the manual page (`man htop`) or the help menu (**F1** or **h** inside `htop`) for a list of supported key commands.
 

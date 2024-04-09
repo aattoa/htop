@@ -27,30 +27,6 @@ linux*|gnu*)
    my_htop_platform=linux
    AC_DEFINE([HTOP_LINUX], [], [Building for Linux.])
    ;;
-freebsd*|kfreebsd*)
-   my_htop_platform=freebsd
-   AC_DEFINE([HTOP_FREEBSD], [], [Building for FreeBSD.])
-   ;;
-netbsd*)
-   my_htop_platform=netbsd
-   AC_DEFINE([HTOP_NETBSD], [], [Building for NetBSD.])
-   ;;
-openbsd*)
-   my_htop_platform=openbsd
-   AC_DEFINE([HTOP_OPENBSD], [], [Building for OpenBSD.])
-   ;;
-dragonfly*)
-   my_htop_platform=dragonflybsd
-   AC_DEFINE([HTOP_DRAGONFLYBSD], [], [Building for DragonFlyBSD.])
-   ;;
-darwin*)
-   my_htop_platform=darwin
-   AC_DEFINE([HTOP_DARWIN], [], [Building for Darwin.])
-   ;;
-solaris*)
-   my_htop_platform=solaris
-   AC_DEFINE([HTOP_SOLARIS], [], [Building for Solaris.])
-   ;;
 *)
    my_htop_platform=unsupported
    AC_DEFINE([HTOP_UNSUPPORTED], [], [Building for an unsupported platform.])
@@ -159,10 +135,6 @@ fi])
 # Optional Section
 
 AC_CHECK_HEADERS([execinfo.h])
-
-if test "$my_htop_platform" = darwin; then
-   AC_CHECK_HEADERS([mach/mach_time.h])
-fi
 
 # ----------------------------------------------------------------------
 
@@ -274,38 +246,10 @@ AC_LINK_IFELSE([
 
 AC_SEARCH_LIBS([ceil], [m], [], [AC_MSG_ERROR([can not find required function ceil()])])
 
-if test "$my_htop_platform" = dragonflybsd; then
-   AC_SEARCH_LIBS([kvm_open], [kvm], [], [AC_MSG_ERROR([can not find required function kvm_open()])])
-   AC_SEARCH_LIBS([getdevs], [devstat], [], [AC_MSG_ERROR([can not find required function getdevs()])])
-fi
-
-if test "$my_htop_platform" = freebsd; then
-   if test "$enable_static" = yes; then
-      AC_SEARCH_LIBS([elf_version], [elf], [], [AC_MSG_ERROR([can not find required function elf_version()])])
-   fi
-   AC_SEARCH_LIBS([kvm_open], [kvm], [], [AC_MSG_ERROR([can not find required function kvm_open()])])
-   AC_SEARCH_LIBS([devstat_checkversion], [devstat], [], [AC_MSG_ERROR([can not find required function devstat_checkversion()])])
-fi
-
 if test "$my_htop_platform" = linux; then
    if test "$enable_static" != yes; then
       AC_SEARCH_LIBS([dlopen], [dl dld], [], [AC_MSG_ERROR([can not find required function dlopen()])])
    fi
-fi
-
-if test "$my_htop_platform" = netbsd; then
-   AC_SEARCH_LIBS([kvm_open], [kvm], [], [AC_MSG_ERROR([can not find required function kvm_open()])])
-   AC_SEARCH_LIBS([prop_dictionary_get], [prop], [], [AC_MSG_ERROR([can not find required function prop_dictionary_get()])])
-fi
-
-if test "$my_htop_platform" = openbsd; then
-   AC_SEARCH_LIBS([kvm_open], [kvm], [], [AC_MSG_ERROR([can not find required function kvm_open()])])
-fi
-
-if test "$my_htop_platform" = solaris; then
-   AC_SEARCH_LIBS([kstat_open], [kstat], [], [AC_MSG_ERROR([can not find required function kstat_open()])])
-   AC_SEARCH_LIBS([Pgrab_error], [proc], [], [AC_MSG_ERROR([can not find required function Pgrab_error()])])
-   AC_SEARCH_LIBS([free], [malloc], [], [AC_MSG_ERROR([can not find required function free()])])
 fi
 
 # Optional Section
@@ -325,12 +269,6 @@ AC_CHECK_FUNCS([ \
     sched_setscheduler \
     strchrnul \
    ])
-
-if test "$my_htop_platform" = darwin; then
-   AC_CHECK_FUNCS([mach_timebase_info])
-   AC_CHECK_DECLS([IOMainPort], [], [], [[#include <IOKit/IOKitLib.h>]])
-   AC_CHECK_DECLS([IOMasterPort], [], [], [[#include <IOKit/IOKitLib.h>]])
-fi
 
 if test "$my_htop_platform" = pcp; then
    AC_CHECK_FUNCS([pmLookupDescs])
@@ -706,7 +644,7 @@ case "$enable_sensors" in
       AC_MSG_ERROR([bad value '$enable_sensors' for --enable-sensors])
       ;;
 esac
-if test "$enable_sensors" = yes || test "$my_htop_platform" = freebsd; then
+if test "$enable_sensors" = yes; then
    AC_DEFINE([BUILD_WITH_CPU_TEMP], [1], [Define if CPU temperature option should be enabled.])
 fi
 
@@ -806,12 +744,6 @@ AC_SUBST([AM_CPPFLAGS])
 AC_DEFINE_UNQUOTED([COPYRIGHT], ["(C) 2004-2019 Hisham Muhammad. (C) 2020-2024 htop dev team."], [Copyright message.])
 
 AM_CONDITIONAL([HTOP_LINUX], [test "$my_htop_platform" = linux])
-AM_CONDITIONAL([HTOP_FREEBSD], [test "$my_htop_platform" = freebsd])
-AM_CONDITIONAL([HTOP_DRAGONFLYBSD], [test "$my_htop_platform" = dragonflybsd])
-AM_CONDITIONAL([HTOP_NETBSD], [test "$my_htop_platform" = netbsd])
-AM_CONDITIONAL([HTOP_OPENBSD], [test "$my_htop_platform" = openbsd])
-AM_CONDITIONAL([HTOP_DARWIN], [test "$my_htop_platform" = darwin])
-AM_CONDITIONAL([HTOP_SOLARIS], [test "$my_htop_platform" = solaris])
 AM_CONDITIONAL([HTOP_PCP], [test "$my_htop_platform" = pcp])
 AM_CONDITIONAL([HTOP_UNSUPPORTED], [test "$my_htop_platform" = unsupported])
 

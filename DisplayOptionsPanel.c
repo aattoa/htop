@@ -140,8 +140,6 @@ DisplayOptionsPanel* DisplayOptionsPanel_new(Settings* settings, ScreenManager* 
    Panel_add(super, (Object*) CheckItem_newByRef(
    #if defined(HTOP_LINUX)
                                                  "Also show CPU temperature (requires libsensors)",
-   #elif defined(HTOP_FREEBSD)
-                                                 "Also show CPU temperature",
    #else
    #error Unknown temperature implementation!
    #endif
