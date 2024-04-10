@@ -651,7 +651,7 @@ static const struct {
    { .key = "   F5 t: ",  .roInactive = false, .info = "tree view" },
    { .key = "      p: ",  .roInactive = false, .info = "toggle program path" },
    { .key = "      m: ",  .roInactive = false, .info = "toggle merged command" },
-   { .key = "      Z: ",  .roInactive = false, .info = "pause/resume process updates" },
+   { .key = "    s Z: ",  .roInactive = false, .info = "pause/resume process updates" },
    { .key = "      u: ",  .roInactive = false, .info = "show processes of a single user" },
    { .key = "      H: ",  .roInactive = false, .info = "hide/show user process threads" },
    { .key = "      K: ",  .roInactive = false, .info = "hide/show kernel threads" },
@@ -683,12 +683,12 @@ static const struct {
    { .key = "      i: ", .roInactive = true,  .info = "set IO priority" },
    { .key = "      X: ", .roInactive = true,  .info = "list open files with lsof" },
    { .key = "      L: ", .roInactive = false, .info = "list file locks of process" },
-   { .key = "      s: ", .roInactive = true,  .info = "trace syscalls with strace" },
+   { .key = "      S: ", .roInactive = true,  .info = "trace syscalls with strace" },
    { .key = "      w: ", .roInactive = false, .info = "wrap process command in multiple lines" },
 #ifdef SCHEDULER_SUPPORT
    { .key = "      Y: ", .roInactive = true,  .info = "set scheduling policy" },
 #endif
-   { .key = " F2 C S: ", .roInactive = false, .info = "setup" },
+   { .key = "   F2 C: ", .roInactive = false, .info = "setup" },
    { .key = "   F1 ?: ", .roInactive = false, .info = "show this help screen" },
    { .key = "  F10 q: ", .roInactive = false, .info = "quit" },
    { .key = NULL, .info = NULL }
@@ -906,7 +906,6 @@ void Action_setBindings(Htop_Action* keys) {
    keys['N'] = actionSortByPID;
    keys['O'] = actionToggleRunningInContainer;
    keys['P'] = actionSortByCPU;
-   keys['S'] = actionSetup;
    keys['T'] = actionSortByTime;
    keys['U'] = actionUntagAll;
 #ifdef SCHEDULER_SUPPORT
@@ -925,7 +924,8 @@ void Action_setBindings(Htop_Action* keys) {
    keys['m'] = actionToggleMergedCommand;
    keys['p'] = actionToggleProgramPath;
    keys['q'] = actionQuit;
-   keys['s'] = actionStrace;
+   keys['s'] = actionTogglePauseUpdate;
+   keys['S'] = actionStrace;
    keys['t'] = actionToggleTreeView;
    keys['u'] = actionFilterByUser;
    keys['w'] = actionShowCommandScreen;
