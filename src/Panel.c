@@ -346,34 +346,28 @@ static int Panel_headerHeight(const Panel* this) {
    return RichString_sizeVal(this->header) > 0 ? 1 : 0;
 }
 
+static void Panel_scroll(Panel* this, const int size, const int amount) {
+   const int high = size - this->h - Panel_headerHeight(this);
+   this->scrollV = CLAMP(this->scrollV + amount, 0, MAXIMUM(0, high));
+   this->selected += amount;
+   this->needsRedraw = true;
+}
+
 bool Panel_onKey(Panel* this, int key) {
    assert (this != NULL);
 
    const int size = Vector_size(this->items);
 
-   #define PANEL_SCROLL(amount)                                                                                     \
-   do {                                                                                                             \
-      this->selected += (amount);                                                                                   \
-      this->scrollV = CLAMP(this->scrollV + (amount), 0, MAXIMUM(0, (size - this->h - Panel_headerHeight(this))));  \
-      this->needsRedraw = true;                                                                                     \
-   } while (0)
-
    switch (key) {
       case KEY_DOWN:
       case KEY_CTRL('N'):
       case 'j':
-      #ifdef KEY_C_DOWN
-      case KEY_C_DOWN:
-      #endif
          this->selected++;
          break;
 
       case KEY_UP:
       case KEY_CTRL('P'):
       case 'k':
-      #ifdef KEY_C_UP
-      case KEY_C_UP:
-      #endif
          this->selected--;
          break;
 
@@ -394,19 +388,27 @@ bool Panel_onKey(Panel* this, int key) {
          break;
 
       case KEY_PPAGE:
-         PANEL_SCROLL(-(this->h - Panel_headerHeight(this)));
+         Panel_scroll(this, size, -(this->h - Panel_headerHeight(this)));
          break;
 
       case KEY_NPAGE:
-         PANEL_SCROLL(+(this->h - Panel_headerHeight(this)));
+         Panel_scroll(this, size, +(this->h - Panel_headerHeight(this)));
          break;
 
       case KEY_WHEELUP:
-         PANEL_SCROLL(-CRT_scrollWheelVAmount);
+         Panel_scroll(this, size, -CRT_scrollWheelVAmount);
          break;
 
       case KEY_WHEELDOWN:
-         PANEL_SCROLL(+CRT_scrollWheelVAmount);
+         Panel_scroll(this, size, +CRT_scrollWheelVAmount);
+         break;
+
+      case 'e':
+         Panel_scroll(this, size, +1);
+         break;
+
+      case 'y':
+         Panel_scroll(this, size, -1);
          break;
 
       case KEY_HOME:
@@ -435,8 +437,6 @@ bool Panel_onKey(Panel* this, int key) {
       default:
          return false;
    }
-
-   #undef PANEL_SCROLL
 
    // ensure selection within bounds
    if (this->selected < 0 || size == 0) {

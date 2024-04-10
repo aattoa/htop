@@ -679,7 +679,7 @@ static const struct {
 #if (defined(HAVE_LIBHWLOC) || defined(HAVE_AFFINITY))
    { .key = "      a: ", .roInactive = true, .info = "set CPU affinity" },
 #endif
-   { .key = "      e: ", .roInactive = false, .info = "show process environment" },
+   { .key = "      E: ", .roInactive = false, .info = "show process environment" },
    { .key = "      i: ", .roInactive = true,  .info = "set IO priority" },
    { .key = "      X: ", .roInactive = true,  .info = "list open files with lsof" },
    { .key = "      L: ", .roInactive = false, .info = "list file locks of process" },
@@ -920,7 +920,7 @@ void Action_setBindings(Htop_Action* keys) {
    keys[']'] = actionHigherPriority;
    keys['a'] = actionSetAffinity;
    keys['c'] = actionTagAllChildren;
-   keys['e'] = actionShowEnvScreen;
+   keys['E'] = actionShowEnvScreen;
    keys['L'] = actionShowLocks;
    keys['m'] = actionToggleMergedCommand;
    keys['p'] = actionToggleProgramPath;
