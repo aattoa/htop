@@ -216,4 +216,6 @@ void CRT_enableDelay(void);
 
 void CRT_setColors(int colorScheme);
 
+int translateViKey(int key);
+
 #endif

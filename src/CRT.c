@@ -1312,3 +1312,17 @@ void CRT_handleSIGSEGV(int signal) {
    );
    _exit(1);
 }
+
+int translateViKey(const int key) {
+    switch (key) {
+        case 'h': return KEY_LEFT;
+        case 'j': return KEY_DOWN;
+        case 'k': return KEY_UP;
+        case 'l': return KEY_RIGHT;
+        case 'g': return KEY_HOME;
+        case 'G': return KEY_END;
+        case 'e': return KEY_WHEELDOWN;
+        case 'y': return KEY_WHEELUP;
+    }
+    return key; // not a vi key
+}

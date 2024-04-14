@@ -358,22 +358,21 @@ bool Panel_onKey(Panel* this, int key) {
 
    const int size = Vector_size(this->items);
 
+   key = translateViKey(key);
+
    switch (key) {
       case KEY_DOWN:
       case KEY_CTRL('N'):
-      case 'j':
          this->selected++;
          break;
 
       case KEY_UP:
       case KEY_CTRL('P'):
-      case 'k':
          this->selected--;
          break;
 
       case KEY_LEFT:
       case KEY_CTRL('B'):
-      case 'h':
          if (this->scrollH > 0) {
             this->scrollH -= MAXIMUM(CRT_scrollHAmount, 0);
             this->needsRedraw = true;
@@ -382,7 +381,6 @@ bool Panel_onKey(Panel* this, int key) {
 
       case KEY_RIGHT:
       case KEY_CTRL('F'):
-      case 'l':
          this->scrollH += CRT_scrollHAmount;
          this->needsRedraw = true;
          break;
@@ -403,21 +401,11 @@ bool Panel_onKey(Panel* this, int key) {
          Panel_scroll(this, size, +CRT_scrollWheelVAmount);
          break;
 
-      case 'e':
-         Panel_scroll(this, size, +1);
-         break;
-
-      case 'y':
-         Panel_scroll(this, size, -1);
-         break;
-
       case KEY_HOME:
-      case 'g':
          this->selected = 0;
          break;
 
       case KEY_END:
-      case 'G':
          this->selected = size - 1;
          break;
 

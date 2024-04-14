@@ -261,6 +261,11 @@ void ScreenManager_run(ScreenManager* this, Panel** lastFocus, int* lastKey, con
       int prevCh = ch;
       ch = Panel_getCh(panelFocus);
 
+      // When incremental search is active, current bar != default bar.
+      if (panelFocus->currentBar == panelFocus->defaultBar) {
+          ch = translateViKey(ch);
+      }
+
       HandlerResult result = IGNORED;
 #ifdef HAVE_GETMOUSE
       if (ch == KEY_MOUSE && settings->enableMouse) {
@@ -320,13 +325,6 @@ void ScreenManager_run(ScreenManager* this, Panel** lastFocus, int* lastKey, con
          }
          redraw = false;
          continue;
-      }
-
-      switch (ch) {
-         case KEY_ALT('H'): ch = KEY_LEFT; break;
-         case KEY_ALT('J'): ch = KEY_DOWN; break;
-         case KEY_ALT('K'): ch = KEY_UP; break;
-         case KEY_ALT('L'): ch = KEY_RIGHT; break;
       }
 
       redraw = true;
