@@ -486,10 +486,6 @@ static bool Settings_read(Settings* this, const char* fileName, unsigned int ini
          if (this->colorScheme < 0 || this->colorScheme >= LAST_COLORSCHEME) {
             this->colorScheme = 0;
          }
-      #ifdef HAVE_GETMOUSE
-      } else if (String_eq(option[0], "enable_mouse")) {
-         this->enableMouse = atoi(option[1]);
-      #endif
       } else if (String_eq(option[0], "header_layout")) {
          this->hLayout = isdigit((unsigned char)option[1][0]) ? ((HeaderLayout) atoi(option[1])) : HeaderLayout_fromName(option[1]);
          if (this->hLayout < 0 || this->hLayout >= LAST_HEADER_LAYOUT)
@@ -677,9 +673,6 @@ int Settings_write(const Settings* this, bool onCrash) {
    printSettingInteger("update_process_names", this->updateProcessNames);
    printSettingInteger("account_guest_in_cpu_meter", this->accountGuestInCPUMeter);
    printSettingInteger("color_scheme", this->colorScheme);
-   #ifdef HAVE_GETMOUSE
-   printSettingInteger("enable_mouse", this->enableMouse);
-   #endif
    printSettingInteger("delay", (int) this->delay);
    printSettingInteger("hide_function_bar", (int) this->hideFunctionBar);
    #ifdef HAVE_LIBHWLOC
@@ -833,9 +826,6 @@ Settings* Settings_new(unsigned int initialCpuCount, Hashtable* dynamicMeters, H
       free_and_xStrdup(&this->filename, this->initialFilename);
 
    this->colorScheme = 0;
-#ifdef HAVE_GETMOUSE
-   this->enableMouse = true;
-#endif
    this->changed = false;
    this->delay = DEFAULT_DELAY;
    bool ok = Settings_read(this, this->filename, initialCpuCount);

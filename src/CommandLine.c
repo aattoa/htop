@@ -56,9 +56,6 @@ static void printHelpFlag(const char* name) {
           "-F --filter=FILTER              Show only the commands matching the given filter\n"
           "-h --help                       Print this help screen\n"
           "-H --highlight-changes[=DELAY]  Highlight new and old processes\n", name);
-#ifdef HAVE_GETMOUSE
-   printf("-M --no-mouse                   Disable the mouse\n");
-#endif
    printf("-n --max-iterations=NUMBER      Exit htop after NUMBER iterations/frame updates\n"
           "-p --pid=PID[,PID,PID...]       Show only the given PIDs\n"
           "   --readonly                   Disable all system and process changing features\n"
@@ -83,9 +80,6 @@ typedef struct CommandLineSettings_ {
    int delay;
    int iterationsRemaining;
    bool useColors;
-#ifdef HAVE_GETMOUSE
-   bool enableMouse;
-#endif
    bool treeView;
    bool allowUnicode;
    bool highlightChanges;
@@ -103,9 +97,6 @@ static CommandLineStatus parseArguments(int argc, char** argv, CommandLineSettin
       .delay = -1,
       .iterationsRemaining = -1,
       .useColors = true,
-#ifdef HAVE_GETMOUSE
-      .enableMouse = true,
-#endif
       .treeView = false,
       .allowUnicode = true,
       .highlightChanges = false,
@@ -123,7 +114,6 @@ static CommandLineStatus parseArguments(int argc, char** argv, CommandLineSettin
       {"user",       optional_argument,   0, 'u'},
       {"no-color",   no_argument,         0, 'C'},
       {"no-colour",  no_argument,         0, 'C'},
-      {"no-mouse",   no_argument,         0, 'M'},
       {"no-unicode", no_argument,         0, 'U'},
       {"tree",       no_argument,         0, 't'},
       {"pid",        required_argument,   0, 'p'},
@@ -217,9 +207,6 @@ static CommandLineStatus parseArguments(int argc, char** argv, CommandLineSettin
             flags->useColors = false;
             break;
          case 'M':
-#ifdef HAVE_GETMOUSE
-            flags->enableMouse = false;
-#endif
             break;
          case 'U':
             flags->allowUnicode = false;
@@ -352,10 +339,6 @@ int CommandLine_run(int argc, char** argv) {
       settings->delay = flags.delay;
    if (!flags.useColors)
       settings->colorScheme = COLORSCHEME_MONOCHROME;
-#ifdef HAVE_GETMOUSE
-   if (!flags.enableMouse)
-      settings->enableMouse = false;
-#endif
    if (flags.treeView)
       settings->ss->treeView = true;
    if (flags.highlightChanges)

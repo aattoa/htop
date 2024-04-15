@@ -4,9 +4,14 @@
 
 ## This fork
 
-* Removes support for platforms other than Linux, in order to simplify the source code and the build process.
 * Uses CMake instead of GNU autotools.
 * Adds `vi` style movement commands.
+* Removes features in order to simplify the source code and the build process.
+
+### Removed features
+
+* Platforms other than Linux
+* Mouse
 
 ## Introduction
 

@@ -297,7 +297,6 @@ static HandlerResult ScreenNamesPanel_eventHandlerNormal(Panel* super, int ch) {
       case '\n':
       case '\r':
       case KEY_ENTER:
-      case KEY_MOUSE:
       case KEY_RECLICK:
          Panel_setSelectionColor(super, PANEL_SELECTION_FOCUS);
          result = HANDLED;

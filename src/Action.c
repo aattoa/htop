@@ -97,7 +97,6 @@ static void Action_runSetup(State* st) {
    ScreenManager_run(scr, NULL, NULL, "Setup");
    ScreenManager_delete(scr);
    if (settings->changed) {
-      CRT_setMouse(settings->enableMouse);
       Header_writeBackToSettings(st->header);
    }
 }

@@ -45,7 +45,6 @@ static HandlerResult ColumnsPanel_eventHandler(Panel* super, int ch) {
       case 0x0a:
       case 0x0d:
       case KEY_ENTER:
-      case KEY_MOUSE:
       case KEY_RECLICK:
          if (selected < size - 1) {
             this->moving = !(this->moving);

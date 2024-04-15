@@ -67,13 +67,7 @@ static HandlerResult MainPanel_eventHandler(Panel* super, int ch) {
       return IGNORED;
 
    /* reset on every normal key */
-   bool needReset = ch != ERR;
-   #ifdef HAVE_GETMOUSE
-   /* except mouse events while mouse support is disabled */
-   if (!(ch != KEY_MOUSE || host->settings->enableMouse))
-      needReset = false;
-   #endif
-   if (needReset)
+   if (ch != ERR)
       this->state->hideSelection = false;
 
    Settings* settings = host->settings;

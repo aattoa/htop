@@ -202,7 +202,6 @@ static HandlerResult AffinityPanel_eventHandler(Panel* super, int ch) {
    bool keepSelected = true;
 
    switch (ch) {
-      case KEY_MOUSE:
       case KEY_RECLICK:
       case ' ':
          #ifdef HAVE_LIBHWLOC

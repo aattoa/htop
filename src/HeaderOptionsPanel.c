@@ -40,7 +40,6 @@ static HandlerResult HeaderOptionsPanel_eventHandler(Panel* super, int ch) {
       case 0x0a:
       case 0x0d:
       case KEY_ENTER:
-      case KEY_MOUSE:
       case KEY_RECLICK:
       case ' ': {
          int mark = Panel_getSelectedIndex(super);

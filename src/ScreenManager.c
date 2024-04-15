@@ -266,52 +266,6 @@ void ScreenManager_run(ScreenManager* this, Panel** lastFocus, int* lastKey, con
           ch = translateViKey(ch);
       }
 
-      HandlerResult result = IGNORED;
-#ifdef HAVE_GETMOUSE
-      if (ch == KEY_MOUSE && settings->enableMouse) {
-         ch = ERR;
-         MEVENT mevent;
-         int ok = getmouse(&mevent);
-         if (ok == OK) {
-            if (mevent.bstate & BUTTON1_RELEASED) {
-               if (mevent.y == LINES - 1) {
-                  ch = FunctionBar_synthesizeEvent(panelFocus->currentBar, mevent.x);
-               } else {
-                  for (int i = 0; i < this->panelCount; i++) {
-                     Panel* panel = (Panel*) Vector_get(this->panels, i);
-                     if (mevent.x >= panel->x && mevent.x <= panel->x + panel->w) {
-                        if (mevent.y == panel->y) {
-                           ch = EVENT_HEADER_CLICK(mevent.x - panel->x);
-                           break;
-                        } else if (settings->screenTabs && mevent.y == panel->y - 1) {
-                           ch = EVENT_SCREEN_TAB_CLICK(mevent.x);
-                           break;
-                        } else if (mevent.y > panel->y && mevent.y <= panel->y + panel->h) {
-                           ch = KEY_MOUSE;
-                           if (panel == panelFocus || this->allowFocusChange) {
-                              focus = i;
-                              panelFocus = panel;
-                              const Object* oldSelection = Panel_getSelected(panel);
-                              Panel_setSelected(panel, mevent.y - panel->y + panel->scrollV - 1);
-                              if (Panel_getSelected(panel) == oldSelection) {
-                                 ch = KEY_RECLICK;
-                              }
-                           }
-                           break;
-                        }
-                     }
-                  }
-               }
-            #if NCURSES_MOUSE_VERSION > 1
-            } else if (mevent.bstate & BUTTON4_PRESSED) {
-               ch = KEY_WHEELUP;
-            } else if (mevent.bstate & BUTTON5_PRESSED) {
-               ch = KEY_WHEELDOWN;
-            #endif
-            }
-         }
-      }
-#endif
       if (ch == ERR) {
          if (sortTimeout > 0)
             sortTimeout--;
@@ -326,6 +280,8 @@ void ScreenManager_run(ScreenManager* this, Panel** lastFocus, int* lastKey, con
          redraw = false;
          continue;
       }
+
+      HandlerResult result = IGNORED;
 
       redraw = true;
       if (Panel_eventHandlerFn(panelFocus)) {

@@ -180,7 +180,6 @@ static HandlerResult ScreensPanel_eventHandlerNormal(Panel* super, int ch) {
       case '\n':
       case '\r':
       case KEY_ENTER:
-      case KEY_MOUSE:
       case KEY_RECLICK: {
          this->moving = !this->moving;
          Panel_setSelectionColor(super, this->moving ? PANEL_SELECTION_FOLLOW : PANEL_SELECTION_FOCUS);

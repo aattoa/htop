@@ -108,30 +108,6 @@ void InfoScreen_run(InfoScreen* this) {
          }
       }
 
-#ifdef HAVE_GETMOUSE
-      if (ch == KEY_MOUSE) {
-         MEVENT mevent;
-         int ok = getmouse(&mevent);
-         if (ok == OK) {
-            if (mevent.bstate & BUTTON1_RELEASED) {
-               if (mevent.y >= panel->y && mevent.y < LINES - 1) {
-                  Panel_setSelected(panel, mevent.y - panel->y + panel->scrollV - 1);
-                  ch = 0;
-               } else if (mevent.y == LINES - 1) {
-                  ch = IncSet_synthesizeEvent(this->inc, mevent.x);
-               }
-            }
-            #if NCURSES_MOUSE_VERSION > 1
-            else if (mevent.bstate & BUTTON4_PRESSED) {
-               ch = KEY_WHEELUP;
-            } else if (mevent.bstate & BUTTON5_PRESSED) {
-               ch = KEY_WHEELDOWN;
-            }
-            #endif
-         }
-      }
-#endif
-
       if (this->inc->active) {
          IncSet_handleKey(this->inc, ch, panel, IncSet_getListItemValue, this->lines);
          continue;
