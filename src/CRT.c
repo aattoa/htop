@@ -815,7 +815,7 @@ static bool CRT_retainScreenOnExit = false;
 
 int CRT_scrollHAmount = 2;
 
-int CRT_scrollWheelVAmount = 10;
+int CRT_scrollWheelVAmount = 1;
 
 ColorScheme CRT_colorScheme = COLORSCHEME_DEFAULT;
 
