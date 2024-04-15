@@ -681,8 +681,8 @@ static const struct {
 #endif
    { .key = "      E: ", .roInactive = false, .info = "show process environment" },
    { .key = "      i: ", .roInactive = true,  .info = "set IO priority" },
-   { .key = "      X: ", .roInactive = true,  .info = "list open files with lsof" },
-   { .key = "      L: ", .roInactive = false, .info = "list file locks of process" },
+   { .key = "      L: ", .roInactive = true,  .info = "list open files with lsof" },
+   { .key = "      X: ", .roInactive = false, .info = "list file locks of process" },
    { .key = "      S: ", .roInactive = true,  .info = "trace syscalls with strace" },
    { .key = "      w: ", .roInactive = false, .info = "wrap process command in multiple lines" },
 #ifdef SCHEDULER_SUPPORT
@@ -920,7 +920,7 @@ void Action_setBindings(Htop_Action* keys) {
    keys['a'] = actionSetAffinity;
    keys['c'] = actionTagAllChildren;
    keys['E'] = actionShowEnvScreen;
-   keys['L'] = actionShowLocks;
+   keys['X'] = actionShowLocks;
    keys['m'] = actionToggleMergedCommand;
    keys['p'] = actionToggleProgramPath;
    keys['q'] = actionQuit;
@@ -930,7 +930,7 @@ void Action_setBindings(Htop_Action* keys) {
    keys['u'] = actionFilterByUser;
    keys['w'] = actionShowCommandScreen;
    keys['x'] = actionKill;
-   keys['X'] = actionLsof;
+   keys['L'] = actionLsof;
    keys[KEY_F(1)] = actionHelp;
    keys[KEY_F(2)] = actionSetup;
    keys[KEY_F(3)] = actionIncSearch;
