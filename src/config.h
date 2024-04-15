@@ -85,15 +85,6 @@
 /* Define to 1 if you have the 'systemd' library (-lsystemd). */
 /* #undef HAVE_LIBSYSTEMD */
 
-/* Define to 1 if you have the 'unwind' library (-lunwind). */
-#define HAVE_LIBUNWIND 1
-
-/* Define to 1 if you have the <libunwind.h> header file. */
-#define HAVE_LIBUNWIND_H 1
-
-/* Define to 1 if you have the <libunwind/libunwind.h> header file. */
-/* #undef HAVE_LIBUNWIND_LIBUNWIND_H */
-
 /* Define to 1 if <wchar.h> declares mbstate_t. */
 #define HAVE_MBSTATE_T 1
 
