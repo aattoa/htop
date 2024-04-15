@@ -19,14 +19,6 @@ int Compat_faccessat(int dirfd,
                      int mode,
                      int flags);
 
-int Compat_fstatat(int dirfd,
-                   const char* dirpath,
-                   const char* pathname,
-                   struct stat* statbuf,
-                   int flags);
-
-#ifdef HAVE_OPENAT
-
 typedef int openat_arg_t;
 
 static inline void Compat_openatArgClose(openat_arg_t dirfd) {
@@ -37,28 +29,7 @@ static inline int Compat_openat(openat_arg_t dirfd, const char* pathname, int fl
    return openat(dirfd, pathname, flags);
 }
 
-#else /* HAVE_OPENAT */
-
-typedef const char* openat_arg_t;
-
-static inline void Compat_openatArgClose(openat_arg_t dirpath) {
-   (void)dirpath;
-}
-
-int Compat_openat(openat_arg_t dirpath, const char* pathname, int flags);
-
-#endif /* HAVE_OPENAT */
-
-ssize_t Compat_readlinkat(int dirfd,
-                          const char* dirpath,
-                          const char* pathname,
-                          char* buf,
-                          size_t bufsize);
-
-ssize_t Compat_readlink(openat_arg_t dirfd,
-                        const char* pathname,
-                        char* buf,
-                        size_t bufsize);
+ssize_t Compat_readlink(openat_arg_t dirfd, const char* pathname, char* buf, size_t bufsize);
 
 /*
  * static_assert() hack for pre-C11

@@ -28,7 +28,6 @@ typedef struct MemorySwapMeterData_ {
 
 static void MemorySwapMeter_updateValues(Meter* this) {
    MemorySwapMeterData* data = this->meterData;
-
    Meter_updateValues(data->memoryMeter);
    Meter_updateValues(data->swapMeter);
 }
@@ -73,21 +72,16 @@ static void MemorySwapMeter_init(Meter* this) {
 
 static void MemorySwapMeter_updateMode(Meter* this, int mode) {
    MemorySwapMeterData* data = this->meterData;
-
    this->mode = mode;
-
    Meter_setMode(data->memoryMeter, mode);
    Meter_setMode(data->swapMeter, mode);
-
    this->h = MAXIMUM(Meter_modes[data->memoryMeter->mode]->h, Meter_modes[data->swapMeter->mode]->h);
 }
 
 static void MemorySwapMeter_done(Meter* this) {
    MemorySwapMeterData* data = this->meterData;
-
    Meter_delete((Object*)data->swapMeter);
    Meter_delete((Object*)data->memoryMeter);
-
    free(data);
 }
 

@@ -26,9 +26,7 @@ in the source distribution for its full text.
 #include "Object.h"
 #include "ProvideCurses.h"
 #include "ScreensPanel.h"
-#include "ScreenTabsPanel.h"
 #include "Settings.h"
-#include "Vector.h"
 #include "XUtils.h"
 
 
@@ -86,8 +84,7 @@ static void CategoriesPanel_makeScreensPage(CategoriesPanel* this) {
 }
 
 static void CategoriesPanel_makeHeaderOptionsPage(CategoriesPanel* this) {
-   Settings* settings = this->host->settings;
-   Panel* colors = (Panel*) HeaderOptionsPanel_new(settings, this->scr);
+   Panel* colors = (Panel*) HeaderOptionsPanel_new(this->host->settings, this->scr);
    ScreenManager_add(this->scr, colors, -1);
 }
 

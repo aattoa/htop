@@ -22,7 +22,6 @@ in the source distribution for its full text.
 void Machine_init(Machine* this, UsersTable* usersTable, uid_t userId) {
    this->usersTable = usersTable;
    this->userId = userId;
-
    this->htopUserId = getuid();
 
    // discover fixed column width limits

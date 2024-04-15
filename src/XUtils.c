@@ -26,7 +26,6 @@ in the source distribution for its full text.
 void fail(void) {
    CRT_done();
    abort();
-
    _exit(1); // Should never reach here
 }
 

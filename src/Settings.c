@@ -379,8 +379,8 @@ static bool Settings_read(Settings* this, const char* fileName, unsigned int ini
          if (this->config_version > CONFIG_READER_MIN_VERSION) {
             // the version of the config file on disk is newer than what we can read
             fprintf(stderr, "WARNING: %s specifies configuration format\n", fileName);
-            fprintf(stderr, "         version v%d, but this %s binary only supports up to version v%d.\n", this->config_version, PACKAGE, CONFIG_READER_MIN_VERSION);
-            fprintf(stderr, "         The configuration file will be downgraded to v%d when %s exits.\n", CONFIG_READER_MIN_VERSION, PACKAGE);
+            fprintf(stderr, "         version v%d, but this %s binary only supports up to version v%d.\n", this->config_version, program, CONFIG_READER_MIN_VERSION);
+            fprintf(stderr, "         The configuration file will be downgraded to v%d when %s exits.\n", CONFIG_READER_MIN_VERSION, program);
             String_freeArray(option);
             fclose(fd);
             return false;

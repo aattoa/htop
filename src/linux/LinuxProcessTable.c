@@ -43,7 +43,6 @@ in the source distribution for its full text.
 #include "linux/GPUMeter.h"
 #include "linux/LinuxMachine.h"
 #include "linux/LinuxProcess.h"
-#include "linux/Platform.h" // needed for GNU/hurd to get PATH_MAX  // IWYU pragma: keep
 
 #ifdef HAVE_DELAYACCT
 #include "linux/LibNl.h"
@@ -385,9 +384,6 @@ static bool LinuxProcessTable_readStatusFile(Process* process, openat_arg_t proc
 
    unsigned long ctxt = 0;
    process->isRunningInContainer = TRI_OFF;
-#ifdef HAVE_VSERVER
-   lp->vxid = 0;
-#endif
 
    FILE* statusfile = fopenat(procFd, "status", "r");
    if (!statusfile)
@@ -417,34 +413,15 @@ static bool LinuxProcessTable_readStatusFile(Process* process, openat_arg_t proc
 
       } else if (String_startsWith(buffer, "voluntary_ctxt_switches:")) {
          unsigned long vctxt;
-         int ok = sscanf(buffer, "voluntary_ctxt_switches:\t%lu", &vctxt);
-         if (ok == 1) {
+         if (sscanf(buffer, "voluntary_ctxt_switches:\t%lu", &vctxt) == 1) {
             ctxt += vctxt;
          }
 
       } else if (String_startsWith(buffer, "nonvoluntary_ctxt_switches:")) {
          unsigned long nvctxt;
-         int ok = sscanf(buffer, "nonvoluntary_ctxt_switches:\t%lu", &nvctxt);
-         if (ok == 1) {
+         if (sscanf(buffer, "nonvoluntary_ctxt_switches:\t%lu", &nvctxt) == 1) {
             ctxt += nvctxt;
          }
-
-#ifdef HAVE_VSERVER
-      } else if (String_startsWith(buffer, "VxID:")) {
-         int vxid;
-         int ok = sscanf(buffer, "VxID:\t%32d", &vxid);
-         if (ok == 1) {
-            lp->vxid = vxid;
-         }
-#ifdef HAVE_ANCIENT_VSERVER
-      } else if (String_startsWith(buffer, "s_context:")) {
-         int vxid;
-         int ok = sscanf(buffer, "s_context:\t%32d", &vxid);
-         if (ok == 1) {
-            lp->vxid = vxid;
-         }
-#endif /* HAVE_ANCIENT_VSERVER */
-#endif /* HAVE_VSERVER */
       }
    }
 
@@ -467,12 +444,7 @@ static bool LinuxProcessTable_updateUser(const Machine* host, Process* process, 
    }
 
    struct stat sstat;
-#ifdef HAVE_OPENAT
-   int statok = fstat(procFd, &sstat);
-#else
-   int statok = stat(procFd, &sstat);
-#endif
-   if (statok == -1)
+   if (fstat(procFd, &sstat) == -1)
       return false;
 
    if (process->st_uid != sstat.st_uid) {
@@ -764,98 +736,6 @@ static bool LinuxProcessTable_readSmapsFile(LinuxProcess* process, openat_arg_t 
    return true;
 }
 
-#ifdef HAVE_OPENVZ
-
-static void LinuxProcessTable_readOpenVZData(LinuxProcess* process, openat_arg_t procFd) {
-   if (access(PROCDIR "/vz", R_OK) != 0) {
-      free(process->ctid);
-      process->ctid = NULL;
-      process->vpid = Process_getPid(&process->super);
-      return;
-   }
-
-   FILE* file = fopenat(procFd, "status", "r");
-   if (!file) {
-      free(process->ctid);
-      process->ctid = NULL;
-      process->vpid = Process_getPid(&process->super);
-      return;
-   }
-
-   bool foundEnvID = false;
-   bool foundVPid = false;
-   char linebuf[256];
-   while (fgets(linebuf, sizeof(linebuf), file) != NULL) {
-      if (strchr(linebuf, '\n') == NULL) {
-         // Partial line, skip to end of this line
-         while (fgets(linebuf, sizeof(linebuf), file) != NULL) {
-            if (strchr(linebuf, '\n') != NULL) {
-               break;
-            }
-         }
-         continue;
-      }
-
-      char* name_value_sep = strchr(linebuf, ':');
-      if (name_value_sep == NULL) {
-         continue;
-      }
-
-      int field;
-      if (0 == strncasecmp(linebuf, "envID", name_value_sep - linebuf)) {
-         field = 1;
-      } else if (0 == strncasecmp(linebuf, "VPid", name_value_sep - linebuf)) {
-         field = 2;
-      } else {
-         continue;
-      }
-
-      do {
-         name_value_sep++;
-      } while (*name_value_sep != '\0' && *name_value_sep <= 32);
-
-      char* value_end = name_value_sep;
-
-      while (*value_end > 32) {
-         value_end++;
-      }
-
-      if (name_value_sep == value_end) {
-         continue;
-      }
-
-      *value_end = '\0';
-
-      switch (field) {
-         case 1:
-            foundEnvID = true;
-            if (!String_eq(name_value_sep, process->ctid ? process->ctid : ""))
-               free_and_xStrdup(&process->ctid, name_value_sep);
-            break;
-         case 2:
-            foundVPid = true;
-            process->vpid = strtoul(name_value_sep, NULL, 0);
-            break;
-         default:
-            //Sanity Check: Should never reach here, or the implementation is missing something!
-            assert(false && "OpenVZ handling: Unimplemented case for field handling reached.");
-      }
-   }
-
-   fclose(file);
-
-   if (!foundEnvID) {
-      free(process->ctid);
-      process->ctid = NULL;
-   }
-
-   if (!foundVPid) {
-      process->vpid = Process_getPid(&process->super);
-   }
-}
-
-#endif /* HAVE_OPENVZ */
-
 /*
  * Read /proc/<pid>/cgroup (thread-specific data)
  */
@@ -888,13 +768,13 @@ static void LinuxProcessTable_readCGroupFile(LinuxProcess* process, openat_arg_t
 
       char* group = buffer;
       for (size_t i = 0; i < 2; i++) {
-         group = String_strchrnul(group, ':');
+         group = strchrnul(group, ':');
          if (!*group)
             break;
          group++;
       }
 
-      char* eol = String_strchrnul(group, '\n');
+      char* eol = strchrnul(group, '\n');
       *eol = '\0';
 
       if (at != output) {
@@ -993,14 +873,13 @@ static void LinuxProcessTable_readAutogroup(LinuxProcess* process, openat_arg_t 
    process->autogroup_id = -1;
 
    char autogroup[64]; // space for two numeric values and fixed length strings
-   ssize_t amtRead = xReadfileat(procFd, "autogroup", autogroup, sizeof(autogroup));
+   const ssize_t amtRead = xReadfileat(procFd, "autogroup", autogroup, sizeof(autogroup));
    if (amtRead < 0)
       return;
 
    long int identity;
    int nice;
-   int ok = sscanf(autogroup, "/autogroup-%ld nice %d", &identity, &nice);
-   if (ok == 2) {
+   if (sscanf(autogroup, "/autogroup-%ld nice %d", &identity, &nice) == 2) {
       process->autogroup_id = identity;
       process->autogroup_nice = nice;
    }
@@ -1057,11 +936,7 @@ static void LinuxProcessTable_readCwd(LinuxProcess* process, openat_arg_t procFd
 
    char pathBuffer[PATH_MAX + 1] = {0};
 
-#if defined(HAVE_READLINKAT) && defined(HAVE_OPENAT)
-   ssize_t r = readlinkat(procFd, "cwd", pathBuffer, sizeof(pathBuffer) - 1);
-#else
-   ssize_t r = Compat_readlink(procFd, "cwd", pathBuffer, sizeof(pathBuffer) - 1);
-#endif
+   const ssize_t r = readlinkat(procFd, "cwd", pathBuffer, sizeof(pathBuffer) - 1);
 
    if (r < 0) {
       free(process->super.procCwd);
@@ -1086,11 +961,7 @@ static void LinuxProcessList_readExe(Process* process, openat_arg_t procFd, cons
 
    char filename[PATH_MAX + 1];
 
-#if defined(HAVE_READLINKAT) && defined(HAVE_OPENAT)
    ssize_t amtRead = readlinkat(procFd, "exe", filename, sizeof(filename) - 1);
-#else
-   ssize_t amtRead = Compat_readlink(procFd, "exe", filename, sizeof(filename) - 1);
-#endif
    if (amtRead > 0) {
       filename[amtRead] = 0;
       if (!process->procExe ||
@@ -1385,16 +1256,10 @@ static bool LinuxProcessTable_recurseProcTree(LinuxProcessTable* this, openat_ar
    /* set runningTasks from /proc/stat (from Machine_scanCPUTime) */
    pt->runningTasks = lhost->runningTasks;
 
-#ifdef HAVE_OPENAT
    int dirFd = openat(parentFd, dirname, O_RDONLY | O_DIRECTORY | O_NOFOLLOW);
    if (dirFd < 0)
       return false;
    DIR* dir = fdopendir(dirFd);
-#else
-   char dirFd[4096];
-   xSnprintf(dirFd, sizeof(dirFd), "%s/%s", parentFd, dirname);
-   DIR* dir = opendir(dirFd);
-#endif
    if (!dir) {
       Compat_openatArgClose(dirFd);
       return false;
@@ -1436,14 +1301,9 @@ static bool LinuxProcessTable_recurseProcTree(LinuxProcessTable* this, openat_ar
       if (mainTask && pid == Process_getPid(&mainTask->super))
          continue;
 
-#ifdef HAVE_OPENAT
       int procFd = openat(dirFd, entry->d_name, O_RDONLY | O_DIRECTORY | O_NOFOLLOW);
       if (procFd < 0)
          continue;
-#else
-      char procFd[4096];
-      xSnprintf(procFd, sizeof(procFd), "%s/%s", dirFd, entry->d_name);
-#endif
 
       bool preExisting;
       Process* proc = ProcessTable_getProcess(pt, pid, &preExisting, LinuxProcess_new);
@@ -1542,13 +1402,6 @@ static bool LinuxProcessTable_recurseProcTree(LinuxProcessTable* this, openat_ar
          goto errorReadingProcess;
 
       if (!preExisting) {
-
-         #ifdef HAVE_OPENVZ
-         if (ss->flags & PROCESS_FLAG_LINUX_OPENVZ) {
-            LinuxProcessTable_readOpenVZData(lp, procFd);
-         }
-         #endif
-
          if (proc->isKernelThread) {
             Process_updateCmdline(proc, NULL, 0, 0);
          } else {
@@ -1577,24 +1430,14 @@ static bool LinuxProcessTable_recurseProcTree(LinuxProcessTable* this, openat_ar
       /* Check if the process in inside a different PID namespace. */
       if (proc->isRunningInContainer == TRI_INITIAL && rootPidNs != (ino_t)-1) {
          struct stat sb;
-#if defined(HAVE_OPENAT) && defined(HAVE_FSTATAT)
-         int res = fstatat(procFd, "ns/pid", &sb, 0);
-#else
-         char path[4096];
-         xSnprintf(path, sizeof(path), "%s/ns/pid", procFd);
-         int res = stat(path, &sb);
-#endif
-         if (res == 0) {
+         if (fstatat(procFd, "ns/pid", &sb, 0) == 0) {
             proc->isRunningInContainer = (sb.st_ino != rootPidNs) ? TRI_ON : TRI_OFF;
          }
       }
 
       if (ss->flags & PROCESS_FLAG_LINUX_CTXT
-         || ((hideRunningInContainer || ss->flags & PROCESS_FLAG_LINUX_CONTAINER) && proc->isRunningInContainer == TRI_INITIAL)
-#ifdef HAVE_VSERVER
-         || ss->flags & PROCESS_FLAG_LINUX_VSERVER
-#endif
-      ) {
+         || ((hideRunningInContainer || ss->flags & PROCESS_FLAG_LINUX_CONTAINER) && proc->isRunningInContainer == TRI_INITIAL))
+      {
          proc->isRunningInContainer = TRI_OFF;
          if (!LinuxProcessTable_readStatusFile(proc, procFd))
             goto errorReadingProcess;
@@ -1716,10 +1559,8 @@ static bool LinuxProcessTable_recurseProcTree(LinuxProcessTable* this, openat_ar
 
 errorReadingProcess:
       {
-#ifdef HAVE_OPENAT
          if (procFd >= 0)
             close(procFd);
-#endif
 
          if (preExisting) {
             /*
@@ -1766,11 +1607,7 @@ void ProcessTable_goThroughEntries(ProcessTable* super) {
 
    /* PROCDIR is an absolute path */
    assert(PROCDIR[0] == '/');
-#ifdef HAVE_OPENAT
    openat_arg_t rootFd = AT_FDCWD;
-#else
-   openat_arg_t rootFd = "";
-#endif
 
    LinuxProcessTable_recurseProcTree(this, rootFd, lhost, PROCDIR, NULL);
 }

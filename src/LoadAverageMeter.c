@@ -23,21 +23,13 @@ static const int LoadAverageMeter_attributes[] = {
    LOAD_AVERAGE_FIFTEEN
 };
 
-static const int LoadMeter_attributes[] = {
-   LOAD
-};
+static const int LoadMeter_attributes[] = { LOAD };
 
-static const int OK_attributes[] = {
-   METER_VALUE_OK
-};
+static const int OK_attributes[] = { METER_VALUE_OK };
 
-static const int Medium_attributes[] = {
-   METER_VALUE_WARN
-};
+static const int Medium_attributes[] = { METER_VALUE_WARN };
 
-static const int High_attributes[] = {
-   METER_VALUE_ERROR
-};
+static const int High_attributes[] = { METER_VALUE_ERROR };
 
 static void LoadAverageMeter_updateValues(Meter* this) {
    Platform_getLoadAverage(&this->values[0], &this->values[1], &this->values[2]);

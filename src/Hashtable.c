@@ -187,13 +187,12 @@ static void insert(Hashtable* this, ht_key_t key, void* value) {
 }
 
 void Hashtable_setSize(Hashtable* this, size_t size) {
-
    assert(Hashtable_isConsistent(this));
 
    if (size <= this->items)
       return;
 
-   size_t newSize = nextPrime(size);
+   const size_t newSize = nextPrime(size);
    if (newSize == this->size)
       return;
 
@@ -218,7 +217,6 @@ void Hashtable_setSize(Hashtable* this, size_t size) {
 }
 
 void Hashtable_put(Hashtable* this, ht_key_t key, void* value) {
-
    assert(Hashtable_isConsistent(this));
    assert(this->size > 0);
    assert(value);

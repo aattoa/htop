@@ -48,26 +48,22 @@ static void printVersionFlag(const char* name) {
 }
 
 static void printHelpFlag(const char* name) {
-   printf("%s " VERSION "\n"
-          COPYRIGHT "\n"
-          "Released under the GNU GPLv2+.\n\n"
+   printf("%s " VERSION "\n" COPYRIGHT "\nReleased under the GNU GPLv2+.\n\n"
           "-C --no-color                   Use a monochrome color scheme\n"
           "-d --delay=DELAY                Set the delay between updates, in tenths of seconds\n"
           "-F --filter=FILTER              Show only the commands matching the given filter\n"
           "-h --help                       Print this help screen\n"
-          "-H --highlight-changes[=DELAY]  Highlight new and old processes\n", name);
-   printf("-n --max-iterations=NUMBER      Exit htop after NUMBER iterations/frame updates\n"
+          "-H --highlight-changes[=DELAY]  Highlight new and old processes\n"
+          "-n --max-iterations=NUMBER      Exit htop after NUMBER iterations/frame updates\n"
           "-p --pid=PID[,PID,PID...]       Show only the given PIDs\n"
           "   --readonly                   Disable all system and process changing features\n"
           "-s --sort-key=COLUMN            Sort by COLUMN in list view (try --sort-key=help for a list)\n"
           "-t --tree                       Show the tree view (can be combined with -s)\n"
           "-u --user[=USERNAME]            Show only processes for a given user (or $USER)\n"
           "-U --no-unicode                 Do not use unicode but plain ASCII\n"
-          "-V --version                    Print version info\n");
+          "-V --version                    Print version info\n", name);
    Platform_longOptionsUsage(name);
-   printf("\n"
-          "Press F1 inside %s for online help.\n"
-          "See 'man %s' for more information.\n", name, name);
+   printf("\nPress F1 inside %s for online help.\nSee 'man %s' for more information.\n", name, name);
 }
 
 // ----------------------------------------
@@ -104,8 +100,7 @@ static CommandLineStatus parseArguments(int argc, char** argv, CommandLineSettin
       .readonly = false,
    };
 
-   const struct option long_opts[] =
-   {
+   const struct option long_opts[] = {
       {"help",       no_argument,         0, 'h'},
       {"version",    no_argument,         0, 'V'},
       {"delay",      required_argument,   0, 'd'},
@@ -302,7 +297,6 @@ static void setCommFilter(State* state, char** commFilter) {
 }
 
 int CommandLine_run(int argc, char** argv) {
-
    /* initialize locale */
    const char* lc_ctype;
    if ((lc_ctype = getenv("LC_CTYPE")) || (lc_ctype = getenv("LC_ALL")))

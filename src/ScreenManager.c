@@ -16,7 +16,6 @@ in the source distribution for its full text.
 #include <sys/time.h>
 
 #include "CRT.h"
-#include "FunctionBar.h"
 #include "Machine.h"
 #include "Macros.h"
 #include "Object.h"
@@ -60,10 +59,8 @@ void ScreenManager_add(ScreenManager* this, Panel* item, int size) {
 static int header_height(const ScreenManager* this) {
    if (this->state->hideMeters)
       return 0;
-
    if (this->header)
       return this->header->height;
-
    return 0;
 }
 
@@ -226,7 +223,6 @@ void ScreenManager_run(ScreenManager* this, Panel** lastFocus, int* lastKey, con
    int focus = 0;
 
    Panel* panelFocus = (Panel*) Vector_get(this->panels, focus);
-   Settings* settings = this->host->settings;
 
    double oldTime = 0.0;
 

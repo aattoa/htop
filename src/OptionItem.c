@@ -39,11 +39,7 @@ static void CheckItem_display(const Object* cast, RichString* out) {
    assert (this != NULL);
 
    RichString_writeAscii(out, CRT_colors[CHECK_BOX], "[");
-   if (CheckItem_get(this)) {
-      RichString_appendAscii(out, CRT_colors[CHECK_MARK], "x");
-   } else {
-      RichString_appendAscii(out, CRT_colors[CHECK_MARK], " ");
-   }
+   RichString_appendAscii(out, CRT_colors[CHECK_MARK], CheckItem_get(this) ? "x" : " ");
    RichString_appendAscii(out, CRT_colors[CHECK_BOX], "]    ");
    RichString_appendWide(out, CRT_colors[CHECK_TEXT], this->super.text);
 }

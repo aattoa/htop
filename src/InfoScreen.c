@@ -52,7 +52,7 @@ void InfoScreen_drawTitled(InfoScreen* this, const char* fmt, ...) {
    va_start(ap, fmt);
 
    char title[COLS + 1];
-   int len = vsnprintf(title, sizeof(title), fmt, ap);
+   const int len = vsnprintf(title, sizeof(title), fmt, ap);
    va_end(ap);
 
    if (len > COLS) {

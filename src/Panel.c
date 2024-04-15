@@ -221,8 +221,8 @@ void Panel_splice(Panel* this, Vector* from) {
 void Panel_draw(Panel* this, bool force_redraw, bool focus, bool highlightSelected, bool hideFunctionBar) {
    assert (this != NULL);
 
-   int size = Vector_size(this->items);
-   int scrollH = this->scrollH;
+   const int size = Vector_size(this->items);
+   const int scrollH = this->scrollH;
    int y = this->y;
    int x = this->x;
    int h = this->h;
@@ -230,9 +230,9 @@ void Panel_draw(Panel* this, bool force_redraw, bool focus, bool highlightSelect
    if (hideFunctionBar)
       h++;
 
-   const int header_attr = focus
-                         ? CRT_colors[PANEL_HEADER_FOCUS]
-                         : CRT_colors[PANEL_HEADER_UNFOCUS];
+   const int header_attr =
+       CRT_colors[focus ? PANEL_HEADER_FOCUS : PANEL_HEADER_UNFOCUS];
+
    if (force_redraw) {
       if (Panel_printHeaderFn(this))
          Panel_printHeader(this);
@@ -269,12 +269,11 @@ void Panel_draw(Panel* this, bool force_redraw, bool focus, bool highlightSelect
       this->needsRedraw = true;
    }
 
-   int first = this->scrollV;
-   int upTo = MINIMUM(first + h, size);
+   const int first = this->scrollV;
+   const int upTo = MINIMUM(first + h, size);
 
-   int selectionColor = focus
-      ? CRT_colors[this->selectionColorId]
-      : CRT_colors[PANEL_SELECTION_UNFOCUS];
+   const int selectionColor =
+       CRT_colors[focus ? this->selectionColorId : PANEL_SELECTION_UNFOCUS];
 
    if (this->needsRedraw || force_redraw) {
       int line = 0;
@@ -309,7 +308,7 @@ void Panel_draw(Panel* this, bool force_redraw, bool focus, bool highlightSelect
       const Object* oldObj = Vector_get(this->items, this->oldSelected);
       RichString_begin(old);
       Object_display(oldObj, &old);
-      int oldLen = RichString_sizeVal(old);
+      const int oldLen = RichString_sizeVal(old);
       const Object* newObj = Vector_get(this->items, this->selected);
       RichString_begin(new);
       Object_display(newObj, &new);
@@ -440,7 +439,7 @@ bool Panel_onKey(Panel* this, int key) {
 
 
 HandlerResult Panel_selectByTyping(Panel* this, int ch) {
-   int size = Panel_size(this);
+   const int size = Panel_size(this);
 
    if (ch == '#')
       return IGNORED;

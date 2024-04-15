@@ -20,9 +20,7 @@ This meter written by Ian P. Hands (iphands@gmail.com, ihands@redhat.com).
 #include "XUtils.h"
 
 
-static const int BatteryMeter_attributes[] = {
-   BATTERY
-};
+static const int BatteryMeter_attributes[] = { BATTERY };
 
 static void BatteryMeter_updateValues(Meter* this) {
    ACPresence isOnAC;

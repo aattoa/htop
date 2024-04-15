@@ -23,11 +23,7 @@ in the source distribution for its full text.
 ProcessLocksScreen* ProcessLocksScreen_new(const Process* process) {
    ProcessLocksScreen* this = xMalloc(sizeof(ProcessLocksScreen));
    Object_setClass(this, Class(ProcessLocksScreen));
-   if (Process_isThread(process))
-      this->pid = Process_getThreadGroup(process);
-   else
-      this->pid = Process_getPid(process);
-
+   this->pid = Process_isThread(process) ? Process_getThreadGroup(process) : Process_getPid(process);
    return (ProcessLocksScreen*) InfoScreen_init(&this->super, process, NULL, LINES - 2, "   FD TYPE       EXCLUSION  READ/WRITE DEVICE       NODE               START                 END  FILENAME");
 }
 

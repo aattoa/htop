@@ -753,12 +753,8 @@ static Htop_Reaction actionHelp(State* st) {
    mvaddstr(line++, 0, "Swap bar:      ");
    addattrstr(CRT_colors[BAR_BORDER], "[");
    addbartext(CRT_colors[SWAP], "", "used");
-#ifdef HTOP_LINUX
    addbartext(CRT_colors[SWAP_CACHE], "/", "cache");
    addbartext(CRT_colors[SWAP_FRONTSWAP], "/", "frontswap");
-#else
-   addbartext(CRT_colors[SWAP_CACHE], "      ", "");
-#endif
    addbartext(CRT_colors[BAR_SHADOW], "                          ", "used");
    addbartext(CRT_colors[BAR_SHADOW], "/", "total");
    addattrstr(CRT_colors[BAR_BORDER], "]");
@@ -808,7 +804,7 @@ static Htop_Reaction actionHelp(State* st) {
          mvaddstr(line + item, 27, "threads");
       }
    }
-   int leftHelpItems = item;
+   const int leftHelpItems = item;
 
    for (item = 0; helpRight[item].key; item++) {
       attrset((helpRight[item].roInactive && readonly) ? CRT_colors[HELP_SHADOW] : CRT_colors[HELP_BOLD]);

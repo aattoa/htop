@@ -288,26 +288,20 @@ void Row_printKBytes(RichString* str, unsigned long long number, bool coloring) 
    return;
 
 invalidNumber:
-   if (coloring)
-      color = CRT_colors[PROCESS_SHADOW];
-
-   RichString_appendAscii(str, color, "  N/A ");
+   RichString_appendAscii(str, coloring ? CRT_colors[PROCESS_SHADOW] : color, "  N/A ");
 }
 
 void Row_printBytes(RichString* str, unsigned long long number, bool coloring) {
-   if (number == ULLONG_MAX)
-      Row_printKBytes(str, ULLONG_MAX, coloring);
-   else
-      Row_printKBytes(str, number / ONE_K, coloring);
+   Row_printKBytes(str, (number == ULLONG_MAX) ? number : number / ONE_K, coloring);
 }
 
 void Row_printCount(RichString* str, unsigned long long number, bool coloring) {
    char buffer[13];
 
-   int largeNumberColor = coloring ? CRT_colors[LARGE_NUMBER] : CRT_colors[PROCESS];
-   int megabytesColor = coloring ? CRT_colors[PROCESS_MEGABYTES] : CRT_colors[PROCESS];
-   int shadowColor = coloring ? CRT_colors[PROCESS_SHADOW] : CRT_colors[PROCESS];
-   int baseColor = CRT_colors[PROCESS];
+   const int largeNumberColor = coloring ? CRT_colors[LARGE_NUMBER] : CRT_colors[PROCESS];
+   const int megabytesColor = coloring ? CRT_colors[PROCESS_MEGABYTES] : CRT_colors[PROCESS];
+   const int shadowColor = coloring ? CRT_colors[PROCESS_SHADOW] : CRT_colors[PROCESS];
+   const int baseColor = CRT_colors[PROCESS];
 
    if (number == ULLONG_MAX) {
       RichString_appendAscii(str, CRT_colors[PROCESS_SHADOW], "        N/A ");
@@ -337,8 +331,7 @@ void Row_printTime(RichString* str, unsigned long long totalHundredths, bool col
    int len;
 
    if (totalHundredths == 0) {
-      int shadowColor = coloring ? CRT_colors[PROCESS_SHADOW] : CRT_colors[PROCESS];
-
+      const int shadowColor = coloring ? CRT_colors[PROCESS_SHADOW] : CRT_colors[PROCESS];
       RichString_appendAscii(str, shadowColor, " 0:00.00 ");
       return;
    }
@@ -404,9 +397,7 @@ void Row_printTime(RichString* str, unsigned long long totalHundredths, bool col
 
 void Row_printNanoseconds(RichString* str, unsigned long long totalNanoseconds, bool coloring) {
    if (totalNanoseconds == 0) {
-      int shadowColor = coloring ? CRT_colors[PROCESS_SHADOW] : CRT_colors[PROCESS];
-
-      RichString_appendAscii(str, shadowColor, "     0ns ");
+      RichString_appendAscii(str, CRT_colors[coloring ? PROCESS_SHADOW : PROCESS], "     0ns ");
       return;
    }
 
@@ -533,7 +524,6 @@ void Row_toggleTag(Row* this) {
 int Row_compare(const void* v1, const void* v2) {
    const Row* r1 = (const Row*)v1;
    const Row* r2 = (const Row*)v2;
-
    return SPACESHIP_NUMBER(r1->id, r2->id);
 }
 
@@ -541,15 +531,11 @@ int Row_compareByParent_Base(const void* v1, const void* v2) {
    const Row* r1 = (const Row*)v1;
    const Row* r2 = (const Row*)v2;
 
-   int result = SPACESHIP_NUMBER(
+   const int result = SPACESHIP_NUMBER(
       r1->isRoot ? 0 : Row_getGroupOrParent(r1),
-      r2->isRoot ? 0 : Row_getGroupOrParent(r2)
-   );
+      r2->isRoot ? 0 : Row_getGroupOrParent(r2));
 
-   if (result != 0)
-      return result;
-
-   return Row_compare(v1, v2);
+   return result != 0 ? result : Row_compare(v1, v2);
 }
 
 const RowClass Row_class = {

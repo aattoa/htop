@@ -136,13 +136,7 @@ DisplayOptionsPanel* DisplayOptionsPanel_new(Settings* settings, ScreenManager* 
    Panel_add(super, (Object*) CheckItem_newByRef("Also show CPU percentage numerically", &(settings->showCPUUsage)));
    Panel_add(super, (Object*) CheckItem_newByRef("Also show CPU frequency", &(settings->showCPUFrequency)));
    #ifdef BUILD_WITH_CPU_TEMP
-   Panel_add(super, (Object*) CheckItem_newByRef(
-   #if defined(HTOP_LINUX)
-                                                 "Also show CPU temperature (requires libsensors)",
-   #else
-   #error Unknown temperature implementation!
-   #endif
-                                                 &(settings->showCPUTemperature)));
+   Panel_add(super, (Object*) CheckItem_newByRef("Also show CPU temperature (requires libsensors)", &(settings->showCPUTemperature)));
    Panel_add(super, (Object*) CheckItem_newByRef("- Show temperature in degree Fahrenheit instead of Celsius", &(settings->degreeFahrenheit)));
    #endif
    Panel_add(super, (Object*) NumberItem_newByRef("Update interval (in seconds)", &(settings->delay), -1, 1, 255));

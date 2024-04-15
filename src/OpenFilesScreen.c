@@ -48,26 +48,16 @@ typedef struct OpenFiles_FileData_ {
 
 static size_t getIndexForType(char type) {
    switch (type) {
-      case 'f':
-         return 0;
-      case 'a':
-         return 1;
-      case 'D':
-         return 2;
-      case 'i':
-         return 3;
-      case 'n':
-         return 4;
-      case 's':
-         return 5;
-      case 't':
-         return 6;
-      case 'o':
-         return 7;
+      case 'f': return 0;
+      case 'a': return 1;
+      case 'D': return 2;
+      case 'i': return 3;
+      case 'n': return 4;
+      case 's': return 5;
+      case 't': return 6;
+      case 'o': return 7;
    }
-
-   /* should never reach here */
-   abort();
+   abort(); /* should never reach here */
 }
 
 static const char* getDataForType(const OpenFiles_Data* data, char type) {

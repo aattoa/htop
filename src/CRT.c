@@ -1008,11 +1008,7 @@ void CRT_init(const Settings* settings, bool allowUnicode, bool retainScreenOnEx
    }
 
    const char* termType = getenv("TERM");
-   if (termType && String_eq(termType, "linux")) {
-      CRT_scrollHAmount = 20;
-   } else {
-      CRT_scrollHAmount = 2;
-   }
+   CRT_scrollHAmount = (termType && String_eq(termType, "linux")) ? 20 : 2;
 
    if (termType && (String_startsWith(termType, "xterm") || String_eq(termType, "vt220"))) {
       define_key("\033[H", KEY_HOME);
@@ -1051,11 +1047,7 @@ void CRT_init(const Settings* settings, bool allowUnicode, bool retainScreenOnEx
    CRT_setColors(CRT_colorScheme);
 
 #ifdef HAVE_LIBNCURSESW
-   if (allowUnicode && String_eq(nl_langinfo(CODESET), "UTF-8")) {
-      CRT_utf8 = true;
-   } else {
-      CRT_utf8 = false;
-   }
+   CRT_utf8 = (allowUnicode && String_eq(nl_langinfo(CODESET), "UTF-8"));
 #else
    (void) allowUnicode;
 #endif
@@ -1128,7 +1120,6 @@ void CRT_setColors(int colorScheme) {
    short int grayBlackFg = COLORS > 8 ? 8 : 0;
    short int grayBlackBg = (colorScheme != COLORSCHEME_BLACKNIGHT) ? -1 : 0;
    init_pair(ColorIndexGrayBlack, grayBlackFg, grayBlackBg);
-
    init_pair(ColorIndexWhiteDefault, White, -1);
 
    CRT_colors = CRT_colorSchemes[colorScheme];
@@ -1145,9 +1136,7 @@ void CRT_handleSIGSEGV(int signal) {
       "  - Your %s version: '"VERSION"'\n"
       "  - Your OS and kernel version (uname -a)\n"
       "  - Your distribution and release (lsb_release -a)\n"
-      "  - Likely steps to reproduce (How did it happen?)\n\n",
-      program
-   );
+      "  - Likely steps to reproduce (How did it happen?)\n\n", program);
 
    const char* signal_str = strsignal(signal);
    if (!signal_str) {
@@ -1158,8 +1147,7 @@ void CRT_handleSIGSEGV(int signal) {
       "------------------\n"
       "A signal %d (%s) was received.\n"
       "\n",
-      signal, signal_str
-   );
+      signal, signal_str);
 
    fprintf(stderr,
       "Setting information:\n"
@@ -1169,15 +1157,12 @@ void CRT_handleSIGSEGV(int signal) {
 
    fprintf(stderr,
        "Running this program with debug symbols or inside a debugger may "
-       "provide further insights.\n\nThank you for helping to improve %s!\n\n",
-       program);
+       "provide further insights.\n\nThank you for helping to improve %s!\n\n", program);
 
    /* Call old sigsegv handler; may be default exit or third party one (e.g. ASAN) */
    if (sigaction(signal, &old_sig_handler[signal], NULL) < 0) {
       /* This avoids an infinite loop in case the handler could not be reset. */
-      fprintf(stderr,
-         "!!! Chained handler could not be restored. Forcing exit.\n"
-      );
+      fprintf(stderr, "!!! Chained handler could not be restored. Forcing exit.\n");
       _exit(1);
    }
 
@@ -1185,9 +1170,7 @@ void CRT_handleSIGSEGV(int signal) {
    raise(signal);
 
    // Always terminate, even if installed handler returns
-   fprintf(stderr,
-      "!!! Chained handler did not exit. Forcing exit.\n"
-   );
+   fprintf(stderr, "!!! Chained handler did not exit. Forcing exit.\n");
    _exit(1);
 }
 

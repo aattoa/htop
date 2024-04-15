@@ -9,7 +9,7 @@ in the source distribution for its full text.
 */
 
 // IWYU pragma: no_include "config.h"
-#ifndef PACKAGE
+#ifndef HEADER_CONFIG_H
 // strchrnul() needs _GNU_SOURCE defined, see PR #1337 for details
 #error "Must have #include \"config.h\" line at the top of the file that includes these XUtils helper functions"
 #endif
@@ -77,18 +77,6 @@ void String_freeArray(char** s);
 
 ATTR_NONNULL
 char* String_readLine(FILE* fd) ATTR_MALLOC;
-
-ATTR_NONNULL
-static inline char* String_strchrnul(const char* s, int c) {
-#ifdef HAVE_STRCHRNUL
-   return strchrnul(s, c);
-#else
-   char* result = strchr(s, c);
-   if (result)
-      return result;
-   return strchr(s, '\0');
-#endif
-}
 
 /* Always null-terminates dest. Caller must pass a strictly positive size. */
 ATTR_ACCESS3_W(1, 3)

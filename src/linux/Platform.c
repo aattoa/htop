@@ -73,11 +73,6 @@ in the source distribution for its full text.
 #include "LibSensors.h"
 #endif
 
-#ifndef O_PATH
-#define O_PATH         010000000 // declare for ancient glibc versions
-#endif
-
-
 #ifdef HAVE_LIBCAP
 enum CapMode {
    CAP_MODE_OFF,
@@ -784,14 +779,9 @@ static void Platform_Battery_getSysData(double* percent, ACPresence* isOnAC) {
    while ((dirEntry = readdir(dir))) {
       const char* entryName = dirEntry->d_name;
 
-#ifdef HAVE_OPENAT
       int entryFd = openat(dirfd(dir), entryName, O_DIRECTORY | O_PATH);
       if (entryFd < 0)
          continue;
-#else
-      char entryFd[4096];
-      xSnprintf(entryFd, sizeof(entryFd), SYS_POWERSUPPLY_DIR "/%s", entryName);
-#endif
 
       enum { AC, BAT } type;
       if (String_startsWith(entryName, "BAT")) {

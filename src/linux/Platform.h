@@ -33,12 +33,6 @@ in the source distribution for its full text.
 #include "generic/uname.h"
 
 
-/* GNU/Hurd does not have PATH_MAX in limits.h */
-#ifndef PATH_MAX
-   #define PATH_MAX 4096
-#endif
-
-
 extern const ScreenDefaults Platform_defaultScreens[];
 
 extern const unsigned int Platform_numberOfDefaultScreens;

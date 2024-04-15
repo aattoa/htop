@@ -7,11 +7,10 @@ in the source distribution for its full text.
 
 #include "config.h" // IWYU pragma: keep
 
-#include "ProcessTable.h"
-
 #include <assert.h>
 #include <stdlib.h>
 
+#include "ProcessTable.h"
 #include "Hashtable.h"
 #include "Row.h"
 #include "Settings.h"
@@ -20,7 +19,6 @@ in the source distribution for its full text.
 
 void ProcessTable_init(ProcessTable* this, const ObjectClass* klass, Machine* host, Hashtable* pidMatchList) {
    Table_init(&this->super, klass, host);
-
    this->pidMatchList = pidMatchList;
 }
 
@@ -49,7 +47,6 @@ static void ProcessTable_prepareEntries(Table* super) {
    this->userlandThreads = 0;
    this->kernelThreads = 0;
    this->runningTasks = 0;
-
    Table_prepareEntries(super);
 }
 

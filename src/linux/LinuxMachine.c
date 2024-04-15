@@ -26,20 +26,13 @@ in the source distribution for its full text.
 #include "Compat.h"
 #include "CRT.h"
 #include "Macros.h"
-#include "ProcessTable.h"
 #include "Row.h"
 #include "Settings.h"
 #include "UsersTable.h"
 #include "XUtils.h"
 
-#include "linux/Platform.h" // needed for GNU/hurd to get PATH_MAX  // IWYU pragma: keep
-
 #ifdef HAVE_SENSORS_SENSORS_H
 #include "LibSensors.h"
-#endif
-
-#ifndef O_PATH
-#define O_PATH         010000000 // declare for ancient glibc versions
 #endif
 
 /* Similar to get_nprocs_conf(3) / _SC_NPROCESSORS_CONF
@@ -77,14 +70,9 @@ static void LinuxMachine_updateCPUcount(LinuxMachine* this) {
       if (id == ULONG_MAX || endp == entry->d_name + 3 || *endp != '\0')
          continue;
 
-#ifdef HAVE_OPENAT
       int cpuDirFd = openat(dirfd(dir), entry->d_name, O_DIRECTORY | O_PATH | O_NOFOLLOW);
       if (cpuDirFd < 0)
          continue;
-#else
-      char cpuDirFd[4096];
-      xSnprintf(cpuDirFd, sizeof(cpuDirFd), "/sys/devices/system/cpu/%s", entry->d_name);
-#endif
 
       existing++;
 

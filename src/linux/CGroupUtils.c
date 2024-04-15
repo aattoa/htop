@@ -104,7 +104,7 @@ static bool CGroup_filterName_internal(const char* cgroup, StrBuf_state* s, StrB
       }
 
       const char* labelStart = cgroup;
-      const char* nextSlash = String_strchrnul(labelStart, '/');
+      const char* nextSlash = strchrnul(labelStart, '/');
       const size_t labelLen = nextSlash - labelStart;
 
       if (Label_checkEqual(labelStart, labelLen, str_system_slice)) {
@@ -112,9 +112,8 @@ static bool CGroup_filterName_internal(const char* cgroup, StrBuf_state* s, StrB
 
          if (!StrBuf_putsz(s, w, "[S]"))
             return false;
-
          if (String_startsWith(cgroup, str_system_slice_prefix)) {
-            cgroup = String_strchrnul(cgroup + 1, '/');
+            cgroup = strchrnul(cgroup + 1, '/');
             continue;
          }
 
@@ -135,11 +134,10 @@ static bool CGroup_filterName_internal(const char* cgroup, StrBuf_state* s, StrB
 
          if (!StrBuf_putsz(s, w, "[U]"))
             return false;
-
          if (!String_startsWith(cgroup, str_user_slice_prefix))
             continue;
 
-         const char* userSliceSlash = String_strchrnul(cgroup + strlen(str_user_slice_prefix), '/');
+         const char* userSliceSlash = strchrnul(cgroup + strlen(str_user_slice_prefix), '/');
          const char* sliceSpec = userSliceSlash - strlen(str_slice_suffix);
 
          if (!String_startsWith(sliceSpec, str_slice_suffix))
@@ -150,15 +148,12 @@ static bool CGroup_filterName_internal(const char* cgroup, StrBuf_state* s, StrB
          s->pos--;
          if (!w(s, ':'))
             return false;
-
          if (!StrBuf_putsn(s, w, cgroup + strlen(str_user_slice_prefix), sliceNameLen))
             return false;
-
          if (!w(s, ']'))
             return false;
 
          cgroup = userSliceSlash;
-
          continue;
       }
 
@@ -167,15 +162,12 @@ static bool CGroup_filterName_internal(const char* cgroup, StrBuf_state* s, StrB
 
          if (!w(s, '['))
             return false;
-
          if (!StrBuf_putsn(s, w, cgroup, sliceNameLen))
             return false;
-
          if (!w(s, ']'))
             return false;
 
          cgroup = nextSlash;
-
          continue;
       }
 
@@ -184,15 +176,12 @@ static bool CGroup_filterName_internal(const char* cgroup, StrBuf_state* s, StrB
 
          if (!StrBuf_putsz(s, w, "[lxc:"))
             return false;
-
          if (!StrBuf_putsn(s, w, cgroup + strlen(str_lxc_payload_prefix), cgroupNameLen))
             return false;
-
          if (!w(s, ']'))
             return false;
 
          cgroup = nextSlash;
-
          continue;
       }
 
@@ -201,15 +190,12 @@ static bool CGroup_filterName_internal(const char* cgroup, StrBuf_state* s, StrB
 
          if (!StrBuf_putsz(s, w, "[LXC:"))
             return false;
-
          if (!StrBuf_putsn(s, w, cgroup + strlen(str_lxc_monitor_prefix), cgroupNameLen))
             return false;
-
          if (!w(s, ']'))
             return false;
 
          cgroup = nextSlash;
-
          continue;
       }
 
@@ -222,14 +208,12 @@ static bool CGroup_filterName_internal(const char* cgroup, StrBuf_state* s, StrB
          while (*labelStart == '/')
             labelStart++;
 
-         nextSlash = String_strchrnul(labelStart, '/');
+         nextSlash = strchrnul(labelStart, '/');
          if (nextSlash - labelStart > 0) {
             if (!StrBuf_putsz(s, w, isMonitor ? "[LXC:" : "[lxc:"))
                return false;
-
             if (!StrBuf_putsn(s, w, labelStart, nextSlash - labelStart))
                return false;
-
             if (!w(s, ']'))
                return false;
 
@@ -246,10 +230,8 @@ static bool CGroup_filterName_internal(const char* cgroup, StrBuf_state* s, StrB
 
          if (String_startsWith(cgroup, "user@")) {
             cgroup = nextSlash;
-
             while (*cgroup == '/')
                cgroup++;
-
             continue;
          }
 
@@ -257,7 +239,6 @@ static bool CGroup_filterName_internal(const char* cgroup, StrBuf_state* s, StrB
             return false;
 
          cgroup = nextSlash;
-
          continue;
       }
 
@@ -271,10 +252,8 @@ static bool CGroup_filterName_internal(const char* cgroup, StrBuf_state* s, StrB
 
             if (!StrBuf_putsz(s, w, is_monitor ? "[SNC:" : "[snc:"))
                return false;
-
             if (!StrBuf_putsn(s, w, cgroup + strlen(str_nspawn_scope_prefix), machineScopeNameLen))
                return false;
-
             if (!w(s, ']'))
                return false;
 
@@ -286,65 +265,54 @@ static bool CGroup_filterName_internal(const char* cgroup, StrBuf_state* s, StrB
 
             continue;
          } else if (Label_checkPrefix(labelStart, scopeNameLen, str_snap_scope_prefix)) {
-            const char* nextDot = String_strchrnul(labelStart + strlen(str_snap_scope_prefix), '.');
+            const char* nextDot = strchrnul(labelStart + strlen(str_snap_scope_prefix), '.');
 
             if (!StrBuf_putsz(s, w, "!snap:"))
                return false;
-
             if (nextDot >= labelStart + scopeNameLen) {
                nextDot = labelStart + scopeNameLen;
             }
-
             if (!StrBuf_putsn(s, w, labelStart + strlen(str_snap_scope_prefix), nextDot - (labelStart + strlen(str_snap_scope_prefix))))
                return false;
 
             cgroup = nextSlash;
-
             continue;
          } else if (Label_checkPrefix(labelStart, scopeNameLen, str_pod_scope_prefix)) {
-            const char* nextDot = String_strchrnul(labelStart + strlen(str_pod_scope_prefix), '.');
+            const char* nextDot = strchrnul(labelStart + strlen(str_pod_scope_prefix), '.');
 
             if (!StrBuf_putsz(s, w, "!pod:"))
                return false;
-
             if (nextDot >= labelStart + scopeNameLen) {
                nextDot = labelStart + scopeNameLen;
             }
-
             if (!StrBuf_putsn(s, w, labelStart + strlen(str_pod_scope_prefix),
                MINIMUM( nextDot - (labelStart + strlen(str_pod_scope_prefix)), 12)))
                return false;
 
             cgroup = nextSlash;
-
             continue;
          } else if (Label_checkPrefix(labelStart, scopeNameLen, str_docker_scope_prefix)) {
-            const char* nextDot = String_strchrnul(labelStart + strlen(str_docker_scope_prefix), '.');
+            const char* nextDot = strchrnul(labelStart + strlen(str_docker_scope_prefix), '.');
 
             if (!StrBuf_putsz(s, w, "!docker:"))
                return false;
-
             if (nextDot >= labelStart + scopeNameLen) {
                nextDot = labelStart + scopeNameLen;
             }
-
             if (!StrBuf_putsn(s, w, labelStart + strlen(str_docker_scope_prefix),
                MINIMUM( nextDot - (labelStart + strlen(str_docker_scope_prefix)), 12)))
                return false;
 
             cgroup = nextSlash;
-
             continue;
          }
 
          if (!w(s, '!'))
             return false;
-
          if (!StrBuf_putsn(s, w, cgroup, scopeNameLen))
             return false;
 
          cgroup = nextSlash;
-
          continue;
       }
 
@@ -394,20 +362,16 @@ static bool CGroup_filterContainer_internal(const char* cgroup, StrBuf_state* s,
       }
 
       const char* labelStart = cgroup;
-      const char* nextSlash = String_strchrnul(labelStart, '/');
+      const char* nextSlash = strchrnul(labelStart, '/');
       const size_t labelLen = nextSlash - labelStart;
 
       if (Label_checkPrefix(labelStart, labelLen, str_lxc_payload_prefix)) {
          const size_t cgroupNameLen = labelLen - strlen(str_lxc_payload_prefix);
-
          if (!StrBuf_putsz(s, w, "/lxc:"))
             return false;
-
          if (!StrBuf_putsn(s, w, cgroup + strlen(str_lxc_payload_prefix), cgroupNameLen))
             return false;
-
          cgroup = nextSlash;
-
          continue;
       }
 
@@ -417,14 +381,12 @@ static bool CGroup_filterContainer_internal(const char* cgroup, StrBuf_state* s,
          while (*labelStart == '/')
             labelStart++;
 
-         nextSlash = String_strchrnul(labelStart, '/');
+         nextSlash = strchrnul(labelStart, '/');
          if (nextSlash - labelStart > 0) {
             if (!StrBuf_putsz(s, w, "/lxc:"))
                return false;
-
             if (!StrBuf_putsn(s, w, labelStart, nextSlash - labelStart))
                return false;
-
             cgroup = nextSlash;
             continue;
          }
@@ -438,13 +400,11 @@ static bool CGroup_filterContainer_internal(const char* cgroup, StrBuf_state* s,
 
          if (Label_checkPrefix(labelStart, scopeNameLen, str_nspawn_scope_prefix)) {
             const size_t machineScopeNameLen = scopeNameLen - strlen(str_nspawn_scope_prefix);
-
             const bool is_monitor = String_startsWith(nextSlash, str_nspawn_monitor_label);
 
             if (!is_monitor) {
                if (!StrBuf_putsz(s, w, "/snc:"))
                   return false;
-
                if (!StrBuf_putsn(s, w, cgroup + strlen(str_nspawn_scope_prefix), machineScopeNameLen))
                   return false;
             }
@@ -457,7 +417,7 @@ static bool CGroup_filterContainer_internal(const char* cgroup, StrBuf_state* s,
 
             continue;
          } else if (Label_checkPrefix(labelStart, scopeNameLen, str_pod_scope_prefix)) {
-            const char* nextDot = String_strchrnul(labelStart + strlen(str_pod_scope_prefix), '.');
+            const char* nextDot = strchrnul(labelStart + strlen(str_pod_scope_prefix), '.');
 
             if (!StrBuf_putsz(s, w, "/pod:"))
                return false;
@@ -474,7 +434,7 @@ static bool CGroup_filterContainer_internal(const char* cgroup, StrBuf_state* s,
 
             continue;
          } else if (Label_checkPrefix(labelStart, scopeNameLen, str_docker_scope_prefix)) {
-            const char* nextDot = String_strchrnul(labelStart + strlen(str_docker_scope_prefix), '.');
+            const char* nextDot = strchrnul(labelStart + strlen(str_docker_scope_prefix), '.');
 
             if (!StrBuf_putsz(s, w, "!docker:"))
                return false;
@@ -488,12 +448,10 @@ static bool CGroup_filterContainer_internal(const char* cgroup, StrBuf_state* s,
                return false;
 
             cgroup = nextSlash;
-
             continue;
          }
 
          cgroup = nextSlash;
-
          continue;
       }
 

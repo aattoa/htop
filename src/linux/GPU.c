@@ -101,11 +101,6 @@ void GPU_readProcessData(LinuxProcessTable* lpt, LinuxProcess* lp, openat_arg_t 
       goto out;
    fdinfoFd = -1;
 
-#ifndef HAVE_OPENAT
-   char fdinfoPathBuf[32];
-   xSnprintf(fdinfoPathBuf, sizeof(fdinfoPathBuf), PROCDIR "/%u/fdinfo", Process_getPid(&lp->super));
-#endif
-
    while (true) {
       char* pdev = NULL;
       ClientID client_id = INVALID_CLIENT_ID;
@@ -120,11 +115,7 @@ void GPU_readProcessData(LinuxProcessTable* lpt, LinuxProcess* lp, openat_arg_t 
          continue;
 
       char buffer[4096];
-#ifdef HAVE_OPENAT
       ssize_t ret = xReadfileat(dirfd(fdinfoDir), ename, buffer, sizeof(buffer));
-#else
-      ssize_t ret = xReadfileat(fdinfoPathBuf, ename, buffer, sizeof(buffer));
-#endif
       /* eventfd information can be huge */
       if (ret <= 0 || (size_t)ret >= sizeof(buffer) - 1)
          continue;

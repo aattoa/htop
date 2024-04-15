@@ -17,9 +17,7 @@ in the source distribution for its full text.
 #include "Object.h"
 
 
-static const int DateMeter_attributes[] = {
-   DATE
-};
+static const int DateMeter_attributes[] = { DATE };
 
 static void DateMeter_updateValues(Meter* this) {
    const Machine* host = this->host;

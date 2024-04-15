@@ -7,11 +7,9 @@ in the source distribution for its full text.
 
 #include "config.h" // IWYU pragma: keep
 
-#include "SignalsPanel.h"
-// the above contains #include <signal.h> so do not add that here again (breaks Solaris build)
-
 #include <stdbool.h>
 
+#include "SignalsPanel.h"
 #include "FunctionBar.h"
 #include "ListItem.h"
 #include "Object.h"

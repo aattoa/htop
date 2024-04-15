@@ -128,11 +128,7 @@ static void Table_buildTreeBranch(Table* this, int rowid, unsigned int level, in
 
       int32_t nextIndent = indent | ((int32_t)1 << MINIMUM(level, sizeof(row->indent) * 8 - 2));
       Table_buildTreeBranch(this, row->id, level + 1, (i < lastShown) ? nextIndent : indent, row->show && row->showChildren);
-      if (i == lastShown)
-         row->indent = -nextIndent;
-      else
-         row->indent = nextIndent;
-
+      row->indent = (i == lastShown) ? -nextIndent : nextIndent;
       row->tree_depth = level + 1;
    }
 }

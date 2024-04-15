@@ -8,10 +8,7 @@ in the source distribution for its full text.
 */
 
 #include "Panel.h"
-
-#ifndef HTOP_SOLARIS
 #include <signal.h>
-#endif
 
 
 typedef struct SignalItem_ {

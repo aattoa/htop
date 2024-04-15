@@ -21,10 +21,6 @@ in the source distribution for its full text.
 #endif
 
 
-#ifndef OSRELEASEFILE
-#define OSRELEASEFILE "/etc/os-release"
-#endif
-
 static void parseOSRelease(char* buffer, size_t bufferLen) {
    FILE* stream = fopen(OSRELEASEFILE, "r");
    if (!stream) {

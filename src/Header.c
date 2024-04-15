@@ -147,7 +147,7 @@ void Header_writeBackToSettings(const Header* this) {
       free(colSettings->modes);
 
       const Vector* vec = this->columns[col];
-      int len = Vector_size(vec);
+      const int len = Vector_size(vec);
 
       colSettings->names = len ? xCalloc(len + 1, sizeof(char*)) : NULL;
       colSettings->modes = len ? xCalloc(len, sizeof(int)) : NULL;
@@ -174,7 +174,6 @@ Meter* Header_addMeterByClass(Header* this, const MeterClass* type, unsigned int
    assert(column < HeaderLayout_getColumns(this->headerLayout));
 
    Vector* meters = this->columns[column];
-
    Meter* meter = Meter_new(this->host, param, type);
    Vector_add(meters, meter);
    return meter;
@@ -215,7 +214,6 @@ void Header_draw(const Header* this) {
 
       for (int y = (pad / 2), i = 0; i < Vector_size(meters); i++) {
          Meter* meter = (Meter*) Vector_get(meters, i);
-
          float actualWidth = colWidth;
 
          /* Let meters in text mode expand to the right on empty neighbors;

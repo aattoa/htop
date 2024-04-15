@@ -69,13 +69,6 @@ const ProcessFieldData Process_fields[LAST_PROCESSFIELD] = {
    [TIME] = { .name = "TIME", .title = "  TIME+  ", .description = "Total time the process has spent in user and system time", .flags = 0, .defaultSortDesc = true, },
    [NLWP] = { .name = "NLWP", .title = "NLWP ", .description = "Number of threads in the process", .flags = 0, .defaultSortDesc = true, },
    [TGID] = { .name = "TGID", .title = "TGID", .description = "Thread group ID (i.e. process ID)", .flags = 0, .pidColumn = true, },
-#ifdef HAVE_OPENVZ
-   [CTID] = { .name = "CTID", .title = " CTID    ", .description = "OpenVZ container ID (a.k.a. virtual environment ID)", .flags = PROCESS_FLAG_LINUX_OPENVZ, },
-   [VPID] = { .name = "VPID", .title = "VPID", .description = "OpenVZ process ID", .flags = PROCESS_FLAG_LINUX_OPENVZ, .pidColumn = true, },
-#endif
-#ifdef HAVE_VSERVER
-   [VXID] = { .name = "VXID", .title = " VXID ", .description = "VServer process ID", .flags = PROCESS_FLAG_LINUX_VSERVER, },
-#endif
    [RCHAR] = { .name = "RCHAR", .title = "RCHAR ", .description = "Number of bytes the process has read", .flags = PROCESS_FLAG_IO, .defaultSortDesc = true, },
    [WCHAR] = { .name = "WCHAR", .title = "WCHAR ", .description = "Number of bytes the process has written", .flags = PROCESS_FLAG_IO, .defaultSortDesc = true, },
    [SYSCR] = { .name = "SYSCR", .title = "  READ_SYSC ", .description = "Number of read(2) syscalls for the process", .flags = PROCESS_FLAG_IO, .defaultSortDesc = true, },
@@ -127,9 +120,6 @@ void Process_delete(Object* cast) {
    free(this->container_short);
    free(this->cgroup_short);
    free(this->cgroup);
-#ifdef HAVE_OPENVZ
-   free(this->ctid);
-#endif
    free(this->secattr);
    free(this);
 }
@@ -159,21 +149,13 @@ static int LinuxProcess_effectiveIOPriority(const LinuxProcess* this) {
  * Gather I/O scheduling class and priority (thread-specific data)
  */
 IOPriority LinuxProcess_updateIOPriority(Process* p) {
-   IOPriority ioprio = 0;
-// Other OSes masquerading as Linux (NetBSD?) don't have this syscall
-#ifdef SYS_ioprio_get
-   ioprio = syscall(SYS_ioprio_get, IOPRIO_WHO_PROCESS, Process_getPid(p));
-#endif
-   LinuxProcess* this = (LinuxProcess*) p;
-   this->ioPriority = ioprio;
+   IOPriority ioprio = syscall(SYS_ioprio_get, IOPRIO_WHO_PROCESS, Process_getPid(p));
+   ((LinuxProcess*) p)->ioPriority = ioprio;
    return ioprio;
 }
 
 static bool LinuxProcess_setIOPriority(Process* p, Arg ioprio) {
-// Other OSes masquerading as Linux (NetBSD?) don't have this syscall
-#ifdef SYS_ioprio_set
    syscall(SYS_ioprio_set, IOPRIO_WHO_PROCESS, Process_getPid(p), ioprio.i);
-#endif
    return LinuxProcess_updateIOPriority(p) == ioprio.i;
 }
 
@@ -277,13 +259,6 @@ static void LinuxProcess_rowWriteField(const Row* super, RichString* str, Proces
    case IO_READ_RATE:  Row_printRate(str, lp->io_rate_read_bps, coloring); return;
    case IO_WRITE_RATE: Row_printRate(str, lp->io_rate_write_bps, coloring); return;
    case IO_RATE: Row_printRate(str, LinuxProcess_totalIORate(lp), coloring); return;
-   #ifdef HAVE_OPENVZ
-   case CTID: xSnprintf(buffer, n, "%-8s ", lp->ctid ? lp->ctid : ""); break;
-   case VPID: xSnprintf(buffer, n, "%*d ", Process_pidDigits, lp->vpid); break;
-   #endif
-   #ifdef HAVE_VSERVER
-   case VXID: xSnprintf(buffer, n, "%5u ", lp->vxid); break;
-   #endif
    case CGROUP: xSnprintf(buffer, n, "%-*.*s ", Row_fieldWidths[CGROUP], Row_fieldWidths[CGROUP], lp->cgroup ? lp->cgroup : "N/A"); break;
    case CCGROUP: xSnprintf(buffer, n, "%-*.*s ", Row_fieldWidths[CCGROUP], Row_fieldWidths[CCGROUP], lp->cgroup_short ? lp->cgroup_short : (lp->cgroup ? lp->cgroup : "N/A")); break;
    case CONTAINER: xSnprintf(buffer, n, "%-*.*s ", Row_fieldWidths[CONTAINER], Row_fieldWidths[CONTAINER], lp->container_short ? lp->container_short : "N/A"); break;
@@ -407,16 +382,6 @@ static int LinuxProcess_compareByKey(const Process* v1, const Process* v2, Proce
       return compareRealNumbers(p1->io_rate_write_bps, p2->io_rate_write_bps);
    case IO_RATE:
       return compareRealNumbers(LinuxProcess_totalIORate(p1), LinuxProcess_totalIORate(p2));
-   #ifdef HAVE_OPENVZ
-   case CTID:
-      return SPACESHIP_NULLSTR(p1->ctid, p2->ctid);
-   case VPID:
-      return SPACESHIP_NUMBER(p1->vpid, p2->vpid);
-   #endif
-   #ifdef HAVE_VSERVER
-   case VXID:
-      return SPACESHIP_NUMBER(p1->vxid, p2->vxid);
-   #endif
    case CGROUP:
       return SPACESHIP_NULLSTR(p1->cgroup, p2->cgroup);
    case CCGROUP:

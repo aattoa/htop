@@ -17,9 +17,7 @@ in the source distribution for its full text.
 #include "Object.h"
 
 
-static const int ClockMeter_attributes[] = {
-   CLOCK
-};
+static const int ClockMeter_attributes[] = { CLOCK };
 
 static void ClockMeter_updateValues(Meter* this) {
    const Machine* host = this->host;

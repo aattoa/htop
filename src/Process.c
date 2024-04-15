@@ -515,20 +515,20 @@ void Process_writeCommand(const Process* this, int attr, int baseAttr, RichStrin
 
 static inline char processStateChar(ProcessState state) {
    switch (state) {
-      case UNKNOWN: return '?';
-      case RUNNABLE: return 'U';
-      case RUNNING: return 'R';
-      case QUEUED: return 'Q';
-      case WAITING: return 'W';
+      case UNKNOWN:              return '?';
+      case RUNNABLE:             return 'U';
+      case RUNNING:              return 'R';
+      case QUEUED:               return 'Q';
+      case WAITING:              return 'W';
       case UNINTERRUPTIBLE_WAIT: return 'D';
-      case BLOCKED: return 'B';
-      case PAGING: return 'P';
-      case STOPPED: return 'T';
-      case TRACED: return 't';
-      case ZOMBIE: return 'Z';
-      case DEFUNCT: return 'X';
-      case IDLE: return 'I';
-      case SLEEPING: return 'S';
+      case BLOCKED:              return 'B';
+      case PAGING:               return 'P';
+      case STOPPED:              return 'T';
+      case TRACED:               return 't';
+      case ZOMBIE:               return 'Z';
+      case DEFUNCT:              return 'X';
+      case IDLE:                 return 'I';
+      case SLEEPING:             return 'S';
       default:
          assert(0);
          return '!';
@@ -993,13 +993,11 @@ int Process_compareByKey_Base(const Process* p1, const Process* p2, ProcessField
 void Process_updateComm(Process* this, const char* comm) {
    if (!this->procComm && !comm)
       return;
-
    if (this->procComm && comm && String_eq(this->procComm, comm))
       return;
 
    free(this->procComm);
    this->procComm = comm ? xStrdup(comm) : NULL;
-
    this->mergedCommand.lastUpdate = 0;
 }
 
@@ -1013,10 +1011,8 @@ static int skipPotentialPath(const char* cmdline, int end) {
          slash = i + 1;
          continue;
       }
-
       if (cmdline[i] == ' ' && cmdline[i - 1] != '\\')
          return slash;
-
       if (cmdline[i] == ':' && cmdline[i + 1] == ' ')
          return slash;
    }
@@ -1053,7 +1049,6 @@ void Process_updateCmdline(Process* this, const char* cmdline, int basenameStart
 void Process_updateExe(Process* this, const char* exe) {
    if (!this->procExe && !exe)
       return;
-
    if (this->procExe && exe && String_eq(this->procExe, exe))
       return;
 
@@ -1078,7 +1073,7 @@ void Process_updateCPUFieldWidths(float percentage) {
    }
 
    // Add additional two characters, one for "." and another for precision.
-   uint8_t width = ceil(log10(percentage + 0.1)) + 2;
+   const uint8_t width = ceil(log10(percentage + 0.1)) + 2;
 
    Row_updateFieldWidth(PERCENT_CPU, width);
    Row_updateFieldWidth(PERCENT_NORM_CPU, width);

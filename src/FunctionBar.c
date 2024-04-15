@@ -107,38 +107,23 @@ int FunctionBar_drawExtra(const FunctionBar* this, const char* buffer, int attr,
    }
 
    if (buffer) {
-      if (attr == -1) {
-         attrset(CRT_colors[FUNCTION_BAR]);
-      } else {
-         attrset(attr);
-      }
+      attrset(attr == -1 ? CRT_colors[FUNCTION_BAR] : attr);
       mvaddstr(LINES - 1, x, buffer);
       x += strlen(buffer);
       cursorX = x;
    }
 
    attrset(CRT_colors[RESET_COLOR]);
-
-   if (setCursor) {
-      curs_set(1);
-   } else {
-      curs_set(0);
-   }
-
+   curs_set(setCursor ? 1 : 0);
    currentLen = x;
 
    return cursorX;
 }
 
 void FunctionBar_append(const char* buffer, int attr) {
-   if (attr == -1) {
-      attrset(CRT_colors[FUNCTION_BAR]);
-   } else {
-      attrset(attr);
-   }
+   attrset(attr == -1 ? CRT_colors[FUNCTION_BAR] : attr);
    mvaddstr(LINES - 1, currentLen + 1, buffer);
    attrset(CRT_colors[RESET_COLOR]);
-
    currentLen += strlen(buffer) + 1;
 }
 

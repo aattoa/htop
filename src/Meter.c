@@ -483,9 +483,7 @@ static void BlankMeter_updateValues(Meter* this) {
 static void BlankMeter_display(ATTR_UNUSED const Object* cast, ATTR_UNUSED RichString* out) {
 }
 
-static const int BlankMeter_attributes[] = {
-   DEFAULT_COLOR
-};
+static const int BlankMeter_attributes[] = { DEFAULT_COLOR };
 
 const MeterClass BlankMeter_class = {
    .super = {

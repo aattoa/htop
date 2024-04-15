@@ -11,7 +11,7 @@ in the source distribution for its full text.
 #include "CommandLine.h"
 
 
-const char* program = PACKAGE;
+const char* program = "htop";
 
 int main(int argc, char** argv) {
    return CommandLine_run(argc, argv);
