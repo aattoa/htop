@@ -256,11 +256,7 @@ void ScreenManager_run(ScreenManager* this, Panel** lastFocus, int* lastKey, con
 
       int prevCh = ch;
       ch = Panel_getCh(panelFocus);
-
-      // When incremental search is active, current bar != default bar.
-      if (panelFocus->currentBar == panelFocus->defaultBar) {
-          ch = translateViKey(ch);
-      }
+      ch = panelFocus->cursorOn ? ch : translateViKey(ch);
 
       if (ch == ERR) {
          if (sortTimeout > 0)
