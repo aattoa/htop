@@ -4,18 +4,20 @@
 
 ## This fork
 
+* Adds `vi`-like movement commands.
 * Uses CMake instead of GNU autotools.
-* Adds `vi` style movement commands.
 * Removes features in order to simplify the source code and the build process.
 
 ### Removed features
 
 * Platforms other than Linux
+* Performance Co-Pilot
+* Backtrace
 * Mouse
 
 ## Introduction
 
-`htop` is a cross-platform interactive process viewer.
+`htop` is an interactive process viewer.
 
 `htop` allows scrolling the list of processes vertically and horizontally to see their full command lines and related information like memory and CPU consumption.
 Also system wide information, like load average or swap usage, is shown.
@@ -51,7 +53,7 @@ Install these and other required packages for C development from your package ma
 ### Compile from source:
 To compile from source, clone the Git repository (`git clone`), then run:
 ```sh
-cmake -S . -B build && make -C build
+cmake -B build && make -C build
 ```
 
 ## Runtime dependencies:
